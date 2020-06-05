@@ -5,7 +5,7 @@ import com.honorfly.schoolsys.utils.dao.EntityObj;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sys_user")
+@Table(name = "sys_user_test")
 public class User extends EntityObj {
 
     @Column(name = "number")

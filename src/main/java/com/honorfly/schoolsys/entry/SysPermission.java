@@ -1,10 +1,9 @@
 package com.honorfly.schoolsys.entry;
 
+import com.honorfly.schoolsys.utils.dao.EntityObj;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -12,108 +11,52 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sys_permission")
-public class SysPermission implements java.io.Serializable {
+public class SysPermission extends EntityObj {
 
-	// Fields
-
-	private Long id;
-	private String permissionName;
-	private String permissionUrl;
-	private String newPermissionUrl;
-	
-
-	private Long parentId;
-	private String status;
-	private String isLeaf;
-
-	private SysPermission parent;
-	// Constructors
-
-	public SysPermission getParent() {
-		return parent;
-	}
-
-	public void setParent(SysPermission parent) {
-		this.parent = parent;
-	}
-
-	/** default constructor */
-	public SysPermission() {
-	}
-
-	/** full constructor */
-	public SysPermission(String permissionName, String permissionUrl,
-			Long parentId, String status, String isLeaf) {
-		this.permissionName = permissionName;
-		this.permissionUrl = permissionUrl;
-		this.parentId = parentId;
-		this.status = status;
-		this.isLeaf = isLeaf;
-	}
-
-	// Property accessors
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	@Column(name = "new_permission_url")
-	public String getNewPermissionUrl() {
-		return newPermissionUrl;
-	}
-
-	public void setNewPermissionUrl(String newPermissionUrl) {
-		this.newPermissionUrl = newPermissionUrl;
-	}
 
 	@Column(name = "permission_name")
+	private String permissionName;
+	@Column(name = "permission_url")
+	private String permissionUrl;
+
+
+	@Column(name = "parent_id")
+	private Long parentId;
+
+	@Column(name = "is_leaf")
+	private String isLeaf;
+
 	public String getPermissionName() {
-		return this.permissionName;
+		return permissionName;
 	}
 
 	public void setPermissionName(String permissionName) {
 		this.permissionName = permissionName;
 	}
 
-	@Column(name = "permission_url")
 	public String getPermissionUrl() {
-		return this.permissionUrl;
+		return permissionUrl;
 	}
 
 	public void setPermissionUrl(String permissionUrl) {
 		this.permissionUrl = permissionUrl;
 	}
 
-	@Column(name = "parent_id")
 	public Long getParentId() {
-		return this.parentId;
+		return parentId;
 	}
 
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
 	}
 
-	@Column(name = "status")
-	public String getStatus() {
-		return this.status;
-	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
 
-	@Column(name = "is_leaf")
 	public String getIsLeaf() {
-		return this.isLeaf;
+		return isLeaf;
 	}
 
 	public void setIsLeaf(String isLeaf) {
 		this.isLeaf = isLeaf;
 	}
-
 }

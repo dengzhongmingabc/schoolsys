@@ -1,107 +1,61 @@
 package com.honorfly.schoolsys.entry;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.honorfly.schoolsys.utils.dao.EntityObj;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * SysRole entity. @author MyEclipse Persistence Tools
  */
 @Entity
 @Table(name = "sys_role")
-public class SysRole implements java.io.Serializable {
+public class SysRole  extends EntityObj {
 
 	// Fields
 
-	private Long id;
+	@Column
 	private String roleName;
+	@Column
 	private Date createdDate;
-	private String status;
-	
-	private Set<SysPermission> permissions = new HashSet<SysPermission>();
-
-	public List<SysPermission> buttons = new ArrayList<SysPermission>();
-	// Constructors
-
-
 
 	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(
-        name="sys_role_permission",
-        joinColumns=@JoinColumn(name="role_id"),
-        inverseJoinColumns=@JoinColumn(name="permission_id")
-    )
+	@JoinTable(
+			name="sys_role_permission",
+			joinColumns=@JoinColumn(name="role_id"),
+			inverseJoinColumns=@JoinColumn(name="permission_id")
+	)
+	private Set<SysPermission> permissions = new HashSet<SysPermission>();
+
+
+
+
 	public Set<SysPermission> getPermissions() {
 		return permissions;
 	}
 
-	
+
 	public void setPermissions(Set<SysPermission> permissions) {
 		this.permissions = permissions;
 	}
 
-	/** default constructor */
-	public SysRole() {
-	}
-
-	/** full constructor */
-	public SysRole(String roleName, Timestamp createdDate, String status) {
-		this.roleName = roleName;
-		this.createdDate = createdDate;
-		this.status = status;
-	}
-
-	// Property accessors
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Column(name = "role_name")
 	public String getRoleName() {
-		return this.roleName;
+		return roleName;
 	}
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
 
-	@Column(name = "created_date", length = 19)
+	@Override
 	public Date getCreatedDate() {
-		return this.createdDate;
+		return createdDate;
 	}
 
+	@Override
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	@Column(name = "status")
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 
 }
