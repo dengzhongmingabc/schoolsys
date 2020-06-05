@@ -1,0 +1,166 @@
+1. Ctrl + Space
+
+完成类、方法、变量名称的自动输入
+
+2. Ctrl + N（Ctrl + Shift + N）
+
+跳转到指定的java文件（其它文件）
+
+3. Ctrl + B
+
+跳转到定义处
+
+4. Ctrl + Alt + T
+
+用if、while、try catch来围绕选中的代码行
+
+5. Ctrl + Alt + B
+
+跳转到方法实现处
+
+6. Ctrl + W
+
+按一个word来进行选择操作,在IDEA里的这个快捷键功能是先选择光标所在字符处的单词，然后是选择源
+
+代码的扩展区域。
+
+7. Shift + F1
+
+在浏览器中显示指定的java docs
+
+8. Ctrl + Q
+
+在editor window中显示java docs这个功能很方便--因为有时仅仅是忘记了自己编写的方法中的某个参数的含义，此时又不想再起一个浏览器来查看java doc，此时这个功能的好处就体现出来了
+
+9. Ctrl + /
+
+注释/反注释指定的语句,你也可以用Ctrl + Shift + / 来进行多行语句的注释（即使用多行注释符号"/* ... */"）
+
+10. F2/Shift + F2
+
+跳转到下/上一个错误语句处
+
+11. Shift + F6
+
+提供对方法、变量的重命名
+
+12. Ctrl + Alt + L
+
+根据模板格式化选择的代码,是只对java文件有效
+13. Ctrl + Alt + I
+
+将选中的代码进行自动缩进编排,这个功能在编辑jsp文件的时候也可以工作，
+
+提供了一个对Ctrl + Alt + L功能的补充。
+
+14. Ctrl + Alt + O
+
+优化import自动去除无用的import语句
+
+15. Ctrl + ]/[
+
+跳转到代码块结束/开始处
+
+16.Ctrl+E
+
+显示最近编辑的文件列表
+
+17.Shift+Click
+
+关闭文件
+
+18.Ctrl+Shift+Backspace
+
+跳转到上次编辑的地方
+
+19.Ctrl+F12
+
+显示当前文件的结构
+
+20.Ctrl+F7
+
+查询当前元素在当前文件中的引用，然后按F3可以选择
+
+21.Ctrl+Shift+N
+
+快速打开文件
+
+22.Alt+Q
+
+看到当前方法的声明
+
+23.Ctrl+P
+
+显示参数信息
+
+25.Alt+Insert
+
+生成构造器/Getter/Setter等
+
+26.Ctrl+Alt+V
+
+引入变量。例如把括号内的SQL赋成一个变量
+
+27.Alt+Up and Alt+Down
+
+可在方法间快速移动
+
+下面的不是很有用
+
+28.Alt+Enter
+
+得到一些Intention Action，例如将”==”改为”equals()”
+
+29.Ctrl+Shift+Alt+N
+
+可以快速打开符号
+
+30.Ctrl+Shift+Space
+
+在很多时候都能够给出Smart提示
+
+31.Alt+F3
+
+可以快速寻找
+
+32.Ctrl+O
+
+可以选择父类的方法进行重写
+
+33.Ctrl+Alt+Space
+
+是类名自动完成
+
+34. Ctrl+J
+
+Live Templates!
+
+35.Ctrl+Shift+F7
+
+可以高亮当前元素在当前文件中的使用
+
+30.Ctrl+Alt+Up /Ctrl+Alt+Down
+
+可以快速跳转搜索结果
+
+31.Ctrl+Shift+J
+
+可以整合两行
+
+32.Alt+F8是计算变量值
+
+Ctrl+D 复制上一行或复制选定
+
+Ctrl+Alt+L 格式化代码
+
+Alt+Shift+Insert 列编辑
+
+装上UpperLowerCapitalize后
+
+Alt+P // to uppercase
+
+Alt+L // to lowercase
+
+Alt+C // 首字母大写
+
+你可以在Option--Keymaps中修改设置成你的习惯键位组合。
