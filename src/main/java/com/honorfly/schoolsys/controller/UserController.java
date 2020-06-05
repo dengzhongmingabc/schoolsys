@@ -26,7 +26,7 @@ public class UserController extends BaseController {
     private IUserService userServiceImpl;
 
     @ResponseBody
-    @RequestMapping("/test1123")
+    @RequestMapping("/test111234")
     public String  test(String username,String password){
         return "hello world!";
     }
