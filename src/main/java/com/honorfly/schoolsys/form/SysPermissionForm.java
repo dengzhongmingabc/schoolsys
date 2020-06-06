@@ -15,16 +15,18 @@ import javax.validation.constraints.Pattern;
 
 public class SysPermissionForm {
 
-	@ApiModelProperty(value="手机号码",required=true)
+	@ApiModelProperty(value="按钮名称",required=true)
 	@NotEmpty
-	@Pattern(regexp="^((17[0-9])|(14[0-9])|(13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$",message = "不是规范的手机号码")
 	private String permissionName;
+	@ApiModelProperty(value="URL",required=true)
+	@NotEmpty
 	private String permissionUrl;
 
-
+	@ApiModelProperty(value="父ID")
 	private Long parentId;
 
-	private String isLeaf;
+	@ApiModelProperty(value="是否是叶子",required=true)
+	private Boolean isLeaf;
 
 	public String getPermissionName() {
 		return permissionName;
@@ -52,11 +54,11 @@ public class SysPermissionForm {
 
 
 
-	public String getIsLeaf() {
+	public Boolean getIsLeaf() {
 		return isLeaf;
 	}
 
-	public void setIsLeaf(String isLeaf) {
+	public void setIsLeaf(Boolean isLeaf) {
 		this.isLeaf = isLeaf;
 	}
 }

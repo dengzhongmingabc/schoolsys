@@ -24,7 +24,7 @@ public class SysPermission extends EntityObj {
 	private Long parentId;
 
 	@Column(name = "is_leaf")
-	private String isLeaf;
+	private Boolean isLeaf;
 
 	public String getPermissionName() {
 		return permissionName;
@@ -52,11 +52,11 @@ public class SysPermission extends EntityObj {
 
 
 
-	public String getIsLeaf() {
+	public Boolean getIsLeaf() {
 		return isLeaf;
 	}
 
-	public void setIsLeaf(String isLeaf) {
+	public void setIsLeaf(Boolean isLeaf) {
 		this.isLeaf = isLeaf;
 	}
 }

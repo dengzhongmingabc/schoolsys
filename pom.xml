@@ -71,6 +71,12 @@
 			<version>8.0.19</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.10</version>
+		</dependency>
+
 <!--        &lt;!&ndash;redis缓存 包&ndash;&gt;-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
@@ -128,6 +134,11 @@
 			<version>1.2.47</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>io.jsonwebtoken</groupId>-->
 <!--			<artifactId>jjwt</artifactId>-->
@@ -201,6 +212,13 @@
 				<filtering>true</filtering>
 				<excludes>
 					<exclude>static/layuiadmin/layui/**/*</exclude>
+					<exclude>*.gif</exclude>
+					<exclude>*.png</exclude>
+					<exclude>*.jpg</exclude>
+					<exclude>*.js</exclude>
+					<exclude>*.css</exclude>
+					<exclude>*.ico</exclude>
+					<exclude>/druid/*</exclude>
 				</excludes>
 			</resource>
 			<resource>
@@ -208,6 +226,13 @@
 				<filtering>false</filtering>
 				<includes>
 					<include>static/layuiadmin/layui/**/*</include>
+					<include>*.gif</include>
+					<include>*.png</include>
+					<include>*.jpg</include>
+					<include>*.js</include>
+					<include>*.css</include>
+					<include>*.ico</include>
+					<include>/druid/*</include>
 				</includes>
 			</resource>
 		</resources>
