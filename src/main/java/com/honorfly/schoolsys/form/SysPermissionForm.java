@@ -1,19 +1,17 @@
 package com.honorfly.schoolsys.form;
 
-import com.honorfly.schoolsys.utils.dao.EntityObj;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 
 /**
  * SysPermission entity. @author MyEclipse Persistence Tools
  */
 
 public class SysPermissionForm {
+
+	@ApiModelProperty(value="ID")
+	private Long key;
 
 	@ApiModelProperty(value="按钮名称",required=true)
 	@NotEmpty
@@ -23,10 +21,39 @@ public class SysPermissionForm {
 	private String permissionUrl;
 
 	@ApiModelProperty(value="父ID")
-	private Long parentId;
+	private Long parentId=-1L;
 
 	@ApiModelProperty(value="是否是叶子",required=true)
-	private Boolean isLeaf;
+	private Boolean isLeaf=false;
+
+	@ApiModelProperty(value="icon")
+	private String icon;
+
+	public Long getKey() {
+		return key;
+	}
+
+	public void setKey(Long key) {
+		this.key = key;
+	}
+
+	public Boolean getLeaf() {
+		return isLeaf;
+	}
+
+	public void setLeaf(Boolean leaf) {
+		isLeaf = leaf;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+
 
 	public String getPermissionName() {
 		return permissionName;

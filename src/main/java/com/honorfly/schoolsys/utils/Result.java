@@ -1,4 +1,4 @@
-package com.honorfly.schoolsys.utils.exception;
+package com.honorfly.schoolsys.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -23,12 +23,13 @@ public class Result {
      * 响应数据
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object data;
+    private Object result;
 
     public Result setCode(ResultCode resultCode) {
         this.code = resultCode.code();
         return this;
     }
+
 
     public int getCode() {
         return code;
@@ -52,12 +53,12 @@ public class Result {
         return this;
     }
 
-    public Object getData() {
-        return data;
+    public Object getResult() {
+        return result;
     }
 
-    public Result setData(Object data) {
-        this.data = data;
+    public Result setResult(Object result) {
+        this.result = result;
         return this;
     }
 }

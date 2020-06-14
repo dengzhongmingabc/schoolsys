@@ -1,5 +1,7 @@
 package com.honorfly.schoolsys.utils.exception;
 
+import com.honorfly.schoolsys.utils.Result;
+import com.honorfly.schoolsys.utils.ResultGenerator;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -10,6 +12,7 @@ public class ExceptionControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public Result jsonErrorHandler(HttpServletRequest req, Exception e){
-        return ResultGenerator.genFailResult(e.getMessage());
+        e.printStackTrace();
+        return ResultGenerator.genFailResult(e.toString());
     }
 }

@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 //
 public final class AppConst {
 
+	public static final String USER_KEY = "USER_KEY";
+
 	public static final String SERVER_OK_CODE = "0200";
 	public static final String SERVER_OK_MSG = "操作成功";
 

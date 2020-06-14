@@ -1,11 +1,8 @@
 package com.honorfly.schoolsys.utils.web;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -18,17 +15,19 @@ import java.util.Map;
 public class BaseController{
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	/**
-	 * 
+	 *
 	 */
 	public static final String JSON = "json";
 
 	protected Map<String, Object> dto;
 
 	private static String basePath;
-	
+
 	private static final String entityPackage="com.ydy258.ydy.entity";
 
 	protected static final String session_key="session_key";
+
+	protected static final int pageSize = 20;
 
 
 	/** servletContext */
@@ -55,7 +54,7 @@ public class BaseController{
 		basePath = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest().getContextPath();
 		return basePath;
 	}
-	
+
 	public static HttpServletRequest getRequest(){
 		return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 	}
@@ -86,7 +85,7 @@ public class BaseController{
 		else
 			return Boolean.valueOf(value).booleanValue();
 	}
-	
+
 	public static double getDouble(String key) {
 		String value = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest().getParameter(key);
 		if (value == null || value.length() == 0)
@@ -182,11 +181,11 @@ public class BaseController{
 		return request.getMethod().toUpperCase().equals("POST");
 	}
 
-	
+
 	public Class getEntityByName(String entityName){
 		StringBuffer sb = new StringBuffer(entityPackage).append(".").append(entityName);
 		try {
-			Class c =Class.forName(sb.toString());  
+			Class c =Class.forName(sb.toString());
 			return c;
 		} catch (Exception e) {
 			return null;
