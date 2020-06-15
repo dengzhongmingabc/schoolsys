@@ -60,7 +60,7 @@ public class SysPermissionDaoImpl extends BaseDaoImpl implements ISysPermissionD
 
 
 	public List queryParent() throws Exception{
-		String sql = " select dd.* from sys_permission dd where dd.parent_id=-1 ";
+		String sql = " select dd.* from sys_permission dd where dd.parent_id=0 order by id asc";
 		return this.loadBySQL(sql, null, SysPermission.class);
 	}
 

@@ -15,12 +15,52 @@ public class SysPermission extends EntityObj {
 
     // Fields
 
-    private String permissionName;
-    private String permissionUrl;
+    //title
+    private String title;
+    //name
+    private String name;
+    //组件
+    private String component;
 
+    private Boolean isShow;
+    //redirect
+    private String redirect;
 
     private Long parentId;
     private Boolean isLeaf;
+
+
+    private String icon;
+
+    private SysPermission parent;
+
+    @Column
+    public Boolean getShow() {
+        return isShow;
+    }
+
+    public void setShow(Boolean show) {
+        isShow = show;
+    }
+
+    @Column
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    @Column
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
+
+
 
     @Column(name = "icon")
     public String getIcon() {
@@ -31,9 +71,7 @@ public class SysPermission extends EntityObj {
         this.icon = icon;
     }
 
-    private String icon;
 
-    private SysPermission parent;
     // Constructors
 
     public SysPermission getParent() {
@@ -50,22 +88,20 @@ public class SysPermission extends EntityObj {
     public SysPermission() {
     }
 
-    @Column(name = "permission_name")
-    public String getPermissionName() {
-        return this.permissionName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    @Column(name = "permission_url")
-    public String getPermissionUrl() {
-        return this.permissionUrl;
+    public String getRedirect() {
+        return redirect;
     }
 
-    public void setPermissionUrl(String permissionUrl) {
-        this.permissionUrl = permissionUrl;
+    public void setRedirect(String redirect) {
+        this.redirect = redirect;
     }
 
     @Column(name = "parent_id")

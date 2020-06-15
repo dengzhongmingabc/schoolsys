@@ -74,57 +74,11 @@ public class SysPermissionAction extends BaseController {
 		responseData.put("roleId","admin");
 		return ResultGenerator.genSuccessResult(responseData);
     }
-
+/*
 	@ApiOperation(value="用户导航")
 	@ResponseBody
 	@RequestMapping(value = "/nav",method = RequestMethod.POST)
 	public Result nav() throws Exception{
-		/*[
-		{
-			'name':'dashboard',
-				'parentId':0,
-				'id':1,
-				'meta':{
-			'icon':'dashboard',
-					'title':'仪表盘',
-					'show':true
-		},
-			'component':'RouteView',
-				'redirect':'/dashboard/workplace'
-		},
-		{
-			'name':'workplace',
-				'parentId':1,
-				'id':7,
-				'meta':{
-			'title':'工作台',
-					'show':true
-		},
-			'component':'Workplace'
-		},
-		{
-			'name':'sysusermanager',
-				'parentId':0,
-				'id':20028,
-				'meta':{
-			'title':'系统用户管理',
-					'icon':'user',
-					'show':true
-		},
-			'redirect':'/sysusermanager/perssion',
-				'component':'RouteView'
-		},
-		{
-			'name':'perssion',
-				'parentId':20028,
-				'id':20029,
-				'meta':{
-			'title':'权限管理',
-					'show':true
-		},
-			'component':'PersionManage'
-		}
-]*/
 		List navs = new ArrayList();
 		Map nav = new HashMap();
 		nav.put("name","dashboard");
@@ -173,6 +127,47 @@ public class SysPermissionAction extends BaseController {
 		meta.put("show",true);
 		nav.put("meta",meta);
 		navs.add(nav);
+		com.alibaba.fastjson.JSONArray json = new JSONArray(navs);
+		System.out.println(json);
+		return ResultGenerator.genSuccessResult(navs);
+	}*/
+
+	@ApiOperation(value="用户导航")
+	@ResponseBody
+	@RequestMapping(value = "/nav",method = RequestMethod.POST)
+	public Result nav() throws Exception{
+		List navs = new ArrayList();
+		List<SysPermission> dics = sysPermissionService.queryParent();
+		for(SysPermission dd:dics){
+			Map nav = new HashMap();
+			nav.put("name",dd.getName());
+			nav.put("parentId",dd.getParentId());
+			nav.put("id",dd.getId());
+			nav.put("component",dd.getComponent());
+			nav.put("redirect",dd.getRedirect());
+			Map meta = new HashMap();
+			meta.put("title",dd.getTitle());
+			meta.put("icon",dd.getIcon());
+			meta.put("show",dd.getShow());
+			nav.put("meta",meta);
+			navs.add(nav);
+			dics = sysPermissionService.listByParentId(dd.getId());
+			List<Map> chs2 = new ArrayList<Map>();
+			for(SysPermission d:dics){
+				nav = new HashMap();
+				nav.put("name",d.getName());
+				nav.put("parentId",d.getParentId());
+				nav.put("id",d.getId());
+				nav.put("component",d.getComponent());
+				//nav.put("redirect",d.getRedirect());
+				meta = new HashMap();
+				meta.put("title",d.getTitle());
+				meta.put("icon",d.getIcon());
+				meta.put("show",d.getShow());
+				nav.put("meta",meta);
+				navs.add(nav);
+			}
+		}
 		return ResultGenerator.genSuccessResult(navs);
 	}
 
@@ -364,7 +359,7 @@ public class SysPermissionAction extends BaseController {
 		for(SysPermission p:allPermissions){
 			if(p.getParentId()==-1){
 				Map<String,Object> n = new HashMap<String,Object>();
-				n.put("text", p.getPermissionName());
+				n.put("text", p.getTitle());
 				n.put("mid", p.getId()+"");
 				n.put("cls", "folder");
 				n.put("leaf", false);
@@ -393,8 +388,8 @@ public class SysPermissionAction extends BaseController {
 		 		}else{
 		 			first:for(SysRole role:user.getRoles()){
 		 				   sencond:for(SysPermission permission:role.buttons){
-		 					 // System.out.println(requestpath+":---->"+permission.getPermissionUrl());
-		 					  if(!StringUtils.isBlank(permission.getPermissionUrl())&&value.endsWith(permission.getPermissionUrl())){
+		 					 // System.out.println(requestpath+":---->"+permission.getRedirect());
+		 					  if(!StringUtils.isBlank(permission.getRedirect())&&value.endsWith(permission.getRedirect())){
 		 						  ret.add(value);
 		 						  break first;
 		 					  }
@@ -423,12 +418,12 @@ public class SysPermissionAction extends BaseController {
     	for(SysPermission p:ps){
     		if(p.getParentId().equals(parentId)){
     			Map<String,Object> n = new HashMap<String,Object>();
-				n.put("text", p.getPermissionName());
+				n.put("text", p.getTitle());
 				n.put("mid", p.getId()+"");
 				n.put("cls", "file");
 				n.put("glyph", "xf002@FontAwesome");
 				n.put("leaf", true);
-				n.put("url", p.getPermissionUrl());
+				n.put("url", p.getRedirect());
 				n.put("children", new ArrayList<Map>());
 				list.add(n);
     		}
@@ -457,7 +452,7 @@ public class SysPermissionAction extends BaseController {
 		if(bindingResult.hasErrors()){
 			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
 		}
-		SysPermission sysPermission = sysPermissionService.getById(SysPermission.class, sysPermissionForm.getKey());
+		SysPermission sysPermission = sysPermissionService.getById(SysPermission.class, sysPermissionForm.getId());
 		if(sysPermission==null){
 			return ResultGenerator.genFailResult(AppConst.NOFIND_ERR_MSG);
 		}
@@ -470,11 +465,11 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="通过id删除")
 	@ResponseBody
 	@RequestMapping(value = "/deleteSysPermission",method = RequestMethod.POST)
-	public Result deleteSysPermission(Long key) throws Exception{
-		if(key==null||key<1){
+	public Result deleteSysPermission(Long id) throws Exception{
+		if(id==null||id<1){
 			return ResultGenerator.genFailResult("ID 不能为空！");
 		}
-		SysPermission dd = sysPermissionService.getById(SysPermission.class, key);
+		SysPermission dd = sysPermissionService.getById(SysPermission.class, id);
 		if(dd==null){
 			return ResultGenerator.genFailResult(AppConst.NOFIND_ERR_MSG);
 		}
@@ -509,7 +504,7 @@ public class SysPermissionAction extends BaseController {
 		if(dd.getParentId()!=null||dd.getParentId()!=-1){
 			parent= (SysPermission)sysPermissionService.getById(SysPermission.class, dd.getParentId());
 		}
-		if(!StringUtils.isBlank(dd.getPermissionUrl())&&dd.getPermissionUrl().endsWith(".action")){
+		if(!StringUtils.isBlank(dd.getRedirect())&&dd.getRedirect().endsWith(".action")){
 			dd.setIsLeaf(true);
 		}else{
 			dd.setIsLeaf(false);
@@ -525,7 +520,7 @@ public class SysPermissionAction extends BaseController {
 		List<SysPermission> dics = sysPermissionService.queryParent();
 		SysPermission dd = new SysPermission();
 		dd.setId(Long.valueOf(-1));
-		dd.setPermissionName("根结点");
+		dd.setTitle("根结点");
 		dics.add(0, dd);
 		return ResultGenerator.genSuccessResult(dics);
 	}
@@ -550,10 +545,10 @@ public class SysPermissionAction extends BaseController {
 			Map<String,Object> root = new HashMap<String,Object>();
 			root.put("id", dd.getId());
 			//root.put("parentId", dd.getParentId());
-			root.put("name", dd.getPermissionName());
-			root.put("text", dd.getPermissionName());
+			root.put("name", dd.getTitle());
+			root.put("text", dd.getTitle());
 			root.put("status", dd.getStatus());
-			root.put("url",dd.getPermissionUrl());
+			root.put("url",dd.getRedirect());
 			root.put("expanded", true);
 			root.put("level", 0);
 			root.put("leaf", false);
@@ -564,9 +559,9 @@ public class SysPermissionAction extends BaseController {
 				Map rdm = new HashMap();
 				rdm.put("id",d.getId());
 				rdm.put("expanded", false);
-				rdm.put("name",d.getPermissionName());
-				rdm.put("text",d.getPermissionName());
-				rdm.put("url",d.getPermissionUrl());
+				rdm.put("name",d.getTitle());
+				rdm.put("text",d.getTitle());
+				rdm.put("url",d.getRedirect());
 				rdm.put("parentId",d.getParentId());
 				rdm.put("status", d.getStatus());
 				rdm.put("expanded", false);
@@ -578,9 +573,9 @@ public class SysPermissionAction extends BaseController {
 					Map b = new HashMap();
 					b.put("id",buttion.getId());
 					b.put("expanded", false);
-					b.put("name",buttion.getPermissionName());
-					b.put("text",buttion.getPermissionName());
-					b.put("url",buttion.getPermissionUrl());
+					b.put("name",buttion.getTitle());
+					b.put("text",buttion.getTitle());
+					b.put("url",buttion.getRedirect());
 					b.put("parentId",buttion.getParentId());
 					b.put("status", buttion.getStatus());
 					b.put("leaf", true);
@@ -609,9 +604,9 @@ public class SysPermissionAction extends BaseController {
 			Map<String,Object> root = new HashMap<String,Object>();
 			root.put("id", dd.getId());
 			//root.put("parentId", dd.getParentId());
-			root.put("name", dd.getPermissionName());
-			root.put("text", dd.getPermissionName());
-			root.put("url",dd.getPermissionUrl());
+			root.put("name", dd.getTitle());
+			root.put("text", dd.getTitle());
+			root.put("url",dd.getRedirect());
 			root.put("parent",dd.getParentId());
 			root.put("isLeaf", false);
 			root.put("level", 0);
@@ -622,9 +617,9 @@ public class SysPermissionAction extends BaseController {
 			for(SysPermission d:dics){
 				Map rdm = new HashMap();
 				rdm.put("id",d.getId());
-				rdm.put("name",d.getPermissionName());
-				rdm.put("text",d.getPermissionName());
-				rdm.put("url",d.getPermissionUrl());
+				rdm.put("name",d.getTitle());
+				rdm.put("text",d.getTitle());
+				rdm.put("url",d.getRedirect());
 				rdm.put("parent",d.getParentId());
 				rdm.put("isLeaf", false);
 				rdm.put("level", 1);
@@ -634,9 +629,9 @@ public class SysPermissionAction extends BaseController {
 				for(SysPermission buttion:dics){
 					Map b = new HashMap();
 					b.put("id",buttion.getId());
-					b.put("name",buttion.getPermissionName());
-					b.put("text",buttion.getPermissionName());
-					b.put("url",buttion.getPermissionUrl());
+					b.put("name",buttion.getTitle());
+					b.put("text",buttion.getTitle());
+					b.put("url",buttion.getRedirect());
 					b.put("parent",buttion.getParentId());
 					b.put("isLeaf", true);
 					b.put("level", 2);
@@ -657,52 +652,65 @@ public class SysPermissionAction extends BaseController {
 		List<SysPermission> dics = sysPermissionService.queryParent();
 		for(SysPermission dd:dics){
 			Map<String,Object> root = new HashMap<String,Object>();
-			root.put("key", dd.getId());
+			root.put("id", dd.getId());
 			//root.put("parentId", dd.getParentId());
-			root.put("name", dd.getPermissionName());
-			root.put("text", dd.getPermissionName());
+			root.put("title", dd.getTitle());
+			root.put("text", dd.getTitle());
 			root.put("status", dd.getStatus());
-			root.put("url",dd.getPermissionUrl());
+			root.put("url",dd.getRedirect());
 			root.put("expanded", true);
 			root.put("level", 0);
 			root.put("leaf", false);
 			root.put("icon",dd.getIcon());
+			root.put("component",dd.getComponent());
+			root.put("name",dd.getName());
+			root.put("show",dd.getShow());
 			dics = sysPermissionService.listByParentId(dd.getId());
 
 			List<Map> chs2 = new ArrayList<Map>();
 			for(SysPermission d:dics){
 				Map rdm = new HashMap();
-				rdm.put("key",d.getId());
+				rdm.put("id",d.getId());
 				rdm.put("expanded", false);
-				rdm.put("name",d.getPermissionName());
-				rdm.put("text",d.getPermissionName());
-				rdm.put("url",d.getPermissionUrl());
+				rdm.put("title",d.getTitle());
+				rdm.put("text",d.getTitle());
+				rdm.put("url",d.getRedirect());
 				rdm.put("parentId",d.getParentId());
 				rdm.put("status", d.getStatus());
 				rdm.put("expanded", false);
 				rdm.put("leaf", false);
 				rdm.put("level", 1);
 				rdm.put("icon",d.getIcon());
+				rdm.put("component",d.getComponent());
+				rdm.put("name",d.getName());
+				rdm.put("show",d.getShow());
 				List<Map> chs3 = new ArrayList<Map>();
 				dics = sysPermissionService.listByParentId(d.getId());
 				for(SysPermission buttion:dics){
 					Map b = new HashMap();
-					b.put("key",buttion.getId());
+					b.put("id",buttion.getId());
 					b.put("expanded", false);
-					b.put("name",buttion.getPermissionName());
-					b.put("text",buttion.getPermissionName());
-					b.put("url",buttion.getPermissionUrl());
+					b.put("title",buttion.getTitle());
+					b.put("text",buttion.getTitle());
+					b.put("url",buttion.getRedirect());
 					b.put("parentId",buttion.getParentId());
 					b.put("status", buttion.getStatus());
 					b.put("leaf", true);
 					b.put("level", 2);
+					b.put("component",buttion.getComponent());
+					b.put("name",buttion.getName());
+					b.put("show",buttion.getShow());
 					chs3.add(b);
 				}
-				rdm.put("children", chs3);
+				if(chs3.size()>0){
+					rdm.put("children", chs3);
+				}
 				rdm.put("nodes", chs3);
 				chs2.add(rdm);
 			}
-			root.put("children", chs2);
+			if(chs2.size()>0){
+				root.put("children", chs2);
+			}
 			root.put("nodes", chs2);
 			list.add(root);
 		}
@@ -723,7 +731,7 @@ public class SysPermissionAction extends BaseController {
 			Map<String,Object> root = new HashMap<String,Object>();
 			root.put("id", dd.getId());
 			root.put("parentId", dd.getParentId());
-			root.put("name", dd.getPermissionName());
+			root.put("name", dd.getTitle());
 			root.put("status", dd.getStatus());
 			root.put("expanded", false);
 			root.put("checked", isExit(userpers,dd.getId()));
@@ -733,8 +741,8 @@ public class SysPermissionAction extends BaseController {
 				Map rdm = new HashMap();
 				rdm.put("id",d.getId());
 				rdm.put("expanded", false);
-				rdm.put("name",d.getPermissionName());
-				rdm.put("url",d.getPermissionUrl());
+				rdm.put("name",d.getTitle());
+				rdm.put("url",d.getRedirect());
 				rdm.put("parentId",d.getParentId());
 				rdm.put("status", d.getStatus());
 				rdm.put("checked", isExit(userpers,d.getId()));
@@ -746,8 +754,8 @@ public class SysPermissionAction extends BaseController {
 					Map b = new HashMap();
 					b.put("id",buttion.getId());
 					b.put("expanded", true);
-					b.put("name",buttion.getPermissionName());
-					b.put("url",buttion.getPermissionUrl());
+					b.put("name",buttion.getTitle());
+					b.put("url",buttion.getRedirect());
 					b.put("parentId",buttion.getParentId());
 					b.put("status", buttion.getStatus());
 					b.put("checked", isExit(userpers,buttion.getId()));
