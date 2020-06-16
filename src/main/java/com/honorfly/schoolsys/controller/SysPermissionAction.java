@@ -139,35 +139,59 @@ public class SysPermissionAction extends BaseController {
 		List navs = new ArrayList();
 		List<SysPermission> dics = sysPermissionService.queryParent();
 		for(SysPermission dd:dics){
-			Map nav = new HashMap();
-			nav.put("name",dd.getName());
-			nav.put("parentId",dd.getParentId());
-			nav.put("id",dd.getId());
-			nav.put("component",dd.getComponent());
-			nav.put("redirect",dd.getRedirect());
-			Map meta = new HashMap();
-			meta.put("title",dd.getTitle());
-			meta.put("icon",dd.getIcon());
-			meta.put("show",dd.getShow());
-			nav.put("meta",meta);
-			navs.add(nav);
+			Map navlevel1 = new HashMap();
+			navlevel1.put("name",dd.getName());
+			navlevel1.put("parentId",dd.getParentId());
+			navlevel1.put("id",dd.getId());
+			navlevel1.put("component",dd.getComponent());
+			navlevel1.put("redirect",dd.getRedirect());
+			Map metanavlevel1 = new HashMap();
+			metanavlevel1.put("title",dd.getTitle());
+			metanavlevel1.put("icon",dd.getIcon());
+			metanavlevel1.put("show",dd.getShow());
+			navlevel1.put("meta",metanavlevel1);
+			navs.add(navlevel1);
 			dics = sysPermissionService.listByParentId(dd.getId());
-			List<Map> chs2 = new ArrayList<Map>();
 			for(SysPermission d:dics){
-				nav = new HashMap();
-				nav.put("name",d.getName());
-				nav.put("parentId",d.getParentId());
-				nav.put("id",d.getId());
-				nav.put("component",d.getComponent());
-				//nav.put("redirect",d.getRedirect());
-				meta = new HashMap();
-				meta.put("title",d.getTitle());
-				meta.put("icon",d.getIcon());
-				meta.put("show",d.getShow());
-				nav.put("meta",meta);
-				navs.add(nav);
+				Map navlevel2 = new HashMap();
+				navlevel2.put("name",d.getName());
+				navlevel2.put("parentId",d.getParentId());
+				navlevel2.put("id",d.getId());
+				navlevel2.put("component",d.getComponent());
+				Map metanavlevel2 = new HashMap();
+				metanavlevel2.put("title",d.getTitle());
+				metanavlevel2.put("icon",d.getIcon());
+				metanavlevel2.put("show",d.getShow());
+				metanavlevel2.put("hideHeader",false);
+				metanavlevel2.put("hideChildren",true);
+				navlevel2.put("meta",metanavlevel2);
+				boolean flag = false;
+				dics = sysPermissionService.listByParentId(d.getId());
+				for(SysPermission buttion:dics){
+					flag = true;
+					Map navlevel3 = new HashMap();
+					navlevel3.put("name",buttion.getName());
+					navlevel3.put("parentId",buttion.getParentId());
+					navlevel3.put("id",buttion.getId());
+					navlevel3.put("component",buttion.getComponent());
+					//nav.put("redirect",d.getRedirect());
+					navlevel3.put("path",buttion.getRedirect());
+					Map metanavlevel3 = new HashMap();
+					metanavlevel3.put("title",buttion.getTitle());
+					metanavlevel3.put("icon",buttion.getIcon());
+					metanavlevel3.put("show",buttion.getShow());
+					navlevel3.put("meta",metanavlevel3);
+					navs.add(navlevel3);
+				}
+				//如果有第三级则 第二级加 redirect
+				if(flag){
+					navlevel2.put("redirect",d.getRedirect());
+				}
+				navs.add(navlevel2);
 			}
 		}
+		com.alibaba.fastjson.JSONArray json = new JSONArray(navs);
+		System.out.println(json);
 		return ResultGenerator.genSuccessResult(navs);
 	}
 
