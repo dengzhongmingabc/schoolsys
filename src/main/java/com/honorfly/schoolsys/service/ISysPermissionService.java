@@ -27,4 +27,6 @@ public interface ISysPermissionService extends IBaseService {
 
 	public void delPermission(long delPermissionId)  throws Exception ;
 
+	public List allPermission() throws Exception;
+
 }

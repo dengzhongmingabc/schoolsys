@@ -1,7 +1,8 @@
 package com.honorfly.schoolsys.entry;
 
+import com.honorfly.schoolsys.utils.dao.EntityObj;
+
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -9,28 +10,27 @@ import java.util.*;
  */
 @Entity
 @Table(name = "sys_role")
-public class SysRole implements java.io.Serializable {
+public class SysRole  extends EntityObj {
 
 	// Fields
 
-	private Long id;
+	@Column(name = "role_name")
 	private String roleName;
-	private Date createdDate;
-	private String status;
 
+	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	@JoinTable(
+			name="sys_role_permission",
+			joinColumns=@JoinColumn(name="role_id"),
+			inverseJoinColumns=@JoinColumn(name="permission_id")
+	)
 	private Set<SysPermission> permissions = new HashSet<SysPermission>();
 
-	public List<SysPermission> buttons = new ArrayList<SysPermission>();
+	//public List<SysPermission> buttons = new ArrayList<SysPermission>();
 	// Constructors
 
 
 
-	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinTable(
-        name="sys_role_permission",
-        joinColumns=@JoinColumn(name="role_id"),
-        inverseJoinColumns=@JoinColumn(name="permission_id")
-    )
+
 	public Set<SysPermission> getPermissions() {
 		return permissions;
 	}
@@ -40,29 +40,10 @@ public class SysRole implements java.io.Serializable {
 		this.permissions = permissions;
 	}
 
-	/** default constructor */
-	public SysRole() {
-	}
 
-	/** full constructor */
-	public SysRole(String roleName, Timestamp createdDate, String status) {
-		this.roleName = roleName;
-		this.createdDate = createdDate;
-		this.status = status;
-	}
 
-	// Property accessors
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return this.id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
-	@Column(name = "role_name")
 	public String getRoleName() {
 		return this.roleName;
 	}
@@ -71,22 +52,7 @@ public class SysRole implements java.io.Serializable {
 		this.roleName = roleName;
 	}
 
-	@Column(name = "created_date", length = 19)
-	public Date getCreatedDate() {
-		return this.createdDate;
-	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
 
-	@Column(name = "status")
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 
 }

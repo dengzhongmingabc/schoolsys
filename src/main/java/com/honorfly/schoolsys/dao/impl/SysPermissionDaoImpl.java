@@ -76,14 +76,15 @@ public class SysPermissionDaoImpl extends BaseDaoImpl implements ISysPermissionD
 
 	public List listSysPermissionByIDString(String idString) throws Exception {
 		StringBuffer sb = new StringBuffer("select dd.* from sys_permission dd where id in(");
-		String[] nps = idString.split(",");
+		/*String[] nps = idString.split(",");
 		for(int i=0;i<nps.length;i+=1){
 			if(i==nps.length-1){
 				sb.append(nps[i].split("-")[1]);
 			}else{
 				sb.append(nps[i].split("-")[1]+",");
 			}
-		}
+		}*/
+		sb.append(idString);
 		sb.append(")");
 		return this.loadBySQL(sb.toString(), null, SysPermission.class);
     }
@@ -92,4 +93,9 @@ public class SysPermissionDaoImpl extends BaseDaoImpl implements ISysPermissionD
 		StringBuffer sb = new StringBuffer("select * from sys_role_permission where role_id='"+roleId+"'");
 		return this.loadMapBySQL(sb.toString());
     }
+
+	public List allPermission() throws Exception {
+		StringBuffer sb = new StringBuffer("select * from sys_role_permission");
+		return this.loadMapBySQL(sb.toString());
+	}
 }

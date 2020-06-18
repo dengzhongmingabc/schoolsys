@@ -4,6 +4,7 @@ package com.honorfly.schoolsys.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
@@ -14,8 +15,10 @@ import com.honorfly.schoolsys.form.UserLoginForm;
 import com.honorfly.schoolsys.service.ISysPermissionService;
 import com.honorfly.schoolsys.service.ISysUserService;
 import com.honorfly.schoolsys.utils.AppConst;
+import com.honorfly.schoolsys.utils.DateUtil;
 import com.honorfly.schoolsys.utils.Result;
 import com.honorfly.schoolsys.utils.ResultGenerator;
+import com.honorfly.schoolsys.utils.service.Page;
 import com.honorfly.schoolsys.utils.web.BaseController;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.net.URLDecoder;
 import java.util.*;
 
 
@@ -396,7 +400,7 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(ret);
     }
 
-
+/*
 	@ApiOperation(value="页面按钮集是否有权限")
 	@ResponseBody
 	@RequestMapping(value = "/existsInUserPermissions",method = RequestMethod.POST)
@@ -423,7 +427,7 @@ public class SysPermissionAction extends BaseController {
 		 }
 		return ResultGenerator.genSuccessResult(ret);
 
-    }
+    }*/
 
 	@ApiOperation(value="用戶信息")
 	@ResponseBody
@@ -741,14 +745,15 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(list);
 	}
 
-	@ApiOperation(value="角色id查询")
+	@ApiOperation(value="角色id查询角色所有的权限")
 	@ResponseBody
-	@RequestMapping(value = "/listPermission",method = RequestMethod.POST)
-	public Result listPermission(String roleId) throws Exception{
+	@RequestMapping(value = "/roleListPermission",method = RequestMethod.POST)
+	public Result roleListPermission(String roleId) throws Exception{
 		List<Map<String,Object>> userpers = new ArrayList<Map<String,Object>>();
 		if(!StringUtils.isBlank(roleId)){
 			userpers = sysPermissionService.rolePermissionByRoleID(roleId);
 		}
+		List checkeds = new ArrayList();
 		List<Map> list = new ArrayList<Map>();
 		List<SysPermission> dics = sysPermissionService.queryParent();
 		for(SysPermission dd:dics){
@@ -758,8 +763,12 @@ public class SysPermissionAction extends BaseController {
 			root.put("name", dd.getTitle());
 			root.put("status", dd.getStatus());
 			root.put("expanded", false);
-			root.put("checked", isExit(userpers,dd.getId()));
+			boolean isExsitlevel1 = isExit(userpers,dd.getId());
+			root.put("checked", isExsitlevel1);
 			dics = sysPermissionService.listByParentId(dd.getId());
+			if (isExsitlevel1&&dics.size()<1){
+				checkeds.add(dd.getId());
+			}
 			List<Map> chs2 = new ArrayList<Map>();
 			for(SysPermission d:dics){
 				Map rdm = new HashMap();
@@ -769,11 +778,15 @@ public class SysPermissionAction extends BaseController {
 				rdm.put("url",d.getRedirect());
 				rdm.put("parentId",d.getParentId());
 				rdm.put("status", d.getStatus());
-				rdm.put("checked", isExit(userpers,d.getId()));
+				boolean isExsitlevel2 = isExit(userpers,d.getId());
+				rdm.put("checked", isExsitlevel2);
 				rdm.put("leaf", false);
 				rdm.put("iconCls", "a");
 				List<Map> chs3 = new ArrayList<Map>();
 				dics = sysPermissionService.listByParentId(d.getId());
+				if (isExsitlevel2&&dics.size()<1){
+					checkeds.add(d.getId());
+				}
 				for(SysPermission buttion:dics){
 					Map b = new HashMap();
 					b.put("id",buttion.getId());
@@ -782,9 +795,14 @@ public class SysPermissionAction extends BaseController {
 					b.put("url",buttion.getRedirect());
 					b.put("parentId",buttion.getParentId());
 					b.put("status", buttion.getStatus());
-					b.put("checked", isExit(userpers,buttion.getId()));
+					boolean isExsitlevel3 = isExit(userpers,buttion.getId());
+					b.put("checked", isExsitlevel3);
 					b.put("leaf", true);
 					chs3.add(b);
+					if (isExsitlevel3){
+						checkeds.add(buttion.getId());
+					}
+
 				}
 				rdm.put("children", chs3);
 				chs2.add(rdm);
@@ -792,7 +810,19 @@ public class SysPermissionAction extends BaseController {
 			root.put("children", chs2);
 			list.add(root);
 		}
-		return ResultGenerator.genSuccessResult(list);
+
+
+		/*checkeds.add(7);
+		checkeds.add(10);
+		checkeds.add(11);*/
+
+
+
+		Map result = new HashMap();
+		result.put("treeData",list);
+		result.put("permissions",checkeds);
+
+		return ResultGenerator.genSuccessResult(result);
     }
 
 	private boolean isExit(List<Map<String,Object>> userper,Long id){
@@ -809,16 +839,22 @@ public class SysPermissionAction extends BaseController {
 
 
 
+
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/saveRole",method = RequestMethod.POST)
-   	public Result saveRole(@RequestBody @Valid SysRoleForm sysRoleForm, BindingResult bindingResult) throws Exception {
+   	public Result saveRole(@Valid SysRoleForm sysRoleForm, BindingResult bindingResult) throws Exception {
 		if(bindingResult.hasErrors()){
+			System.out.println(bindingResult.getFieldError().getDefaultMessage());
 			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
 		}
-		SysRole sysRole = new SysRole();
+		SysRole sysRole = null;
+		if(sysRoleForm.getId()<1){
+			sysRole = new SysRole();
+		}else{
+			sysRole = sysPermissionService.getById(SysRole.class,sysRoleForm.getId());
+		}
 		BeanUtils.copyProperties(sysRoleForm,sysRole);
-		sysRole.setCreatedDate(new Date());
 		if(!StringUtils.isBlank(sysRoleForm.getNewpermissions())){
 			List<SysPermission> dics = sysPermissionService.listSysPermissionByIDString(sysRoleForm.getNewpermissions());
 			sysRole.getPermissions().clear();
@@ -826,7 +862,7 @@ public class SysPermissionAction extends BaseController {
 		}else{
 			sysRole.getPermissions().clear();
 		}
-		sysPermissionService.save(sysRole);
+		sysPermissionService.update(sysRole);
 		return ResultGenerator.genSuccessResult();
     }
 
@@ -850,5 +886,57 @@ public class SysPermissionAction extends BaseController {
 		ret.put("sysrole", dd);
 
 		return ResultGenerator.genSuccessResult(ret);
+	}
+
+
+
+
+
+
+	@ApiOperation(value="角色id查询")
+	@ResponseBody
+	@RequestMapping(value = "/rolePageList",method = RequestMethod.POST)
+	public Result roleListByPage(String search,int pageNo,int pageSize) throws Exception{
+		if(!StringUtils.isBlank(search)){
+			search = URLDecoder.decode(search,"UTF-8");
+		}
+		Page page = sysUserService.roleListByPage(search, pageNo, pageSize);
+		List<Map> list = new ArrayList<Map>();
+		for(Object sm:page.getData()){
+			Map mo = new HashMap();
+			mo.put("id", ((SysRole)sm).getId());
+			mo.put("key", ((SysRole)sm).getId());
+			mo.put("roleName", ((SysRole)sm).getRoleName());
+			mo.put("createTime", ((SysRole)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysRole)sm).getCreatedDate()));
+			mo.put("status","有效");
+			list.add(mo);
+		}
+		page.setData(list);
+		page.setPageNo(page.getPageNo());
+		Map tse = new HashMap();
+		tse.put("page",page);
+		com.alibaba.fastjson.JSON json = new JSONObject(tse);
+		System.out.println(json);
+		return ResultGenerator.genSuccessResult(page);
+	}
+
+
+
+	@ApiOperation(value="角色授权")
+	@ResponseBody
+	@RequestMapping(value = "/settingRolePermission",method = RequestMethod.POST)
+	public Result settingRolePermission(long roleId,String permissionsIdStr) throws Exception{
+		if(StringUtils.isBlank(permissionsIdStr)){
+			return ResultGenerator.genFailResult("权限集不能为空");
+		}
+		SysRole sysRole = sysUserService.getById(SysRole.class,roleId);
+		if(sysRole==null){
+			return ResultGenerator.genFailResult("没有对应的角色");
+		}
+		List syspermission = sysPermissionService.listSysPermissionByIDString(permissionsIdStr);
+		sysRole.getPermissions().clear();
+		sysRole.getPermissions().addAll(syspermission);
+		sysUserService.save(sysRole);
+		return ResultGenerator.genSuccessResult();
 	}
 }

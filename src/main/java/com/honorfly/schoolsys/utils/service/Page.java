@@ -22,7 +22,7 @@ public class Page
     /*
      * 当前页码
      */
-    private int currentPage = 1;
+    private int pageNo = 1;
 
     /*
      * 页面记录�?
@@ -37,13 +37,14 @@ public class Page
     /*
      * 记录对象集合
      */
-    private List results;
+    private List data;
 
+    private int totalPage;
     /*
      * 显示的页码集合范�?
      */
     private int[] showPageNumbers;
-    
+
     private Map otherMap = new HashMap();
 
     public Map getOtherMap() {
@@ -54,13 +55,13 @@ public class Page
 	}
 	public Page()
     {
-    	
+
     }
-    public Page(int currentPage, int pageSize, int totalCount, List results) {
-        this.currentPage = currentPage;
+    public Page(int pageNo, int pageSize, int totalCount, List data) {
+        this.pageNo = pageNo;
         this.pageSize = pageSize;
         this.totalCount = totalCount;
-        this.results = results;
+        this.data = data;
     }
 
     public int getPageSize()
@@ -73,14 +74,16 @@ public class Page
         this.pageSize = pageSize;
     }
 
-    public List getResults()
-    {
-        return results;
+    public List getData() {
+        return data;
     }
 
-    public void setResults(List results)
-    {
-        this.results = results;
+    public void setData(List data) {
+        this.data = data;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
     }
 
     public int getTotalCount()
@@ -97,27 +100,27 @@ public class Page
         this.totalCount = totalCount;
     }
 
-    public int getCurrentPage()
+    public int getPageNo()
     {
-        if (this.currentPage < 0)
+        if (this.pageNo < 0)
         {
-            this.currentPage = 1;
+            this.pageNo = 1;
         }
-        if (this.currentPage > this.getTotalPage())
+        if (this.pageNo > this.getTotalPage())
         {
-            this.currentPage = this.getTotalPage();
+            this.pageNo = this.getTotalPage();
         }
-        return this.currentPage;
+        return this.pageNo;
     }
 
-    public void setCurrentPage(int currentPage)
+    public void setPageNo(int pageNo)
     {
-        this.currentPage = currentPage;
+        this.pageNo = pageNo;
     }
 
     /**
      * 获得总页�?
-     * 
+     *
      * @return
      */
     public int getTotalPage()
@@ -128,39 +131,39 @@ public class Page
 
     /**
      * 获得数据库中记录集的索引位置
-     * 
+     *
      * @return
      */
     public int getStartIndex()
     {
-        return (getCurrentPage() - 1) * getPageSize();
+        return (getPageNo() - 1) * getPageSize();
     }
 
     /**
      * 是否有上�?�?
-     * 
+     *
      * @return
      */
     public boolean hasLastPage()
     {
-        if (this.getCurrentPage() > 1) { return true; }
+        if (this.getPageNo() > 1) { return true; }
         return false;
     }
 
     /**
      * 是否有下�?�?
-     * 
+     *
      * @return
      */
     public boolean hasNextPage()
     {
-        if (this.getCurrentPage() < this.getTotalPage()) { return true; }
+        if (this.getPageNo() < this.getTotalPage()) { return true; }
         return false;
     }
 
     /**
      * 默认显示的页码范�?
-     * 
+     *
      * @return
      */
     public int[] getShowPageNumbers()
@@ -170,7 +173,7 @@ public class Page
 
     /**
      * 自定义的显示页码范围
-     * 
+     *
      * @param showCount
      *            页码范围�?
      * @return
@@ -184,8 +187,8 @@ public class Page
                     : totalPageCount];
             if (totalPageCount > showCount)
             {
-                int firstShowPage = currentPage - (showCount + 1) / 2;
-                int endShowPage = currentPage + showCount / 2;
+                int firstShowPage = pageNo - (showCount + 1) / 2;
+                int endShowPage = pageNo + showCount / 2;
                 if (firstShowPage > 0 && endShowPage < totalPageCount)
                 {
                     for (int i = 0, max = showPageNumbers.length; i < max; i++)

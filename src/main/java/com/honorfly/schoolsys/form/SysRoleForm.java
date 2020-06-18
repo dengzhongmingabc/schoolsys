@@ -2,23 +2,18 @@ package com.honorfly.schoolsys.form;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotEmpty;
-
 
 public class SysRoleForm  {
-	@ApiModelProperty(value="角色Id",required=true)
-	@NotEmpty
-	private String roleId;
+	@ApiModelProperty(value="角色Id")
+	private Long id;
 
-	@ApiModelProperty(value="状态",required=true)
-	@NotEmpty
-	private String status;
+	@ApiModelProperty(value="状态")
+	private int status=1;
 
-	@ApiModelProperty(value="名称",required=true)
-	@NotEmpty
+	@ApiModelProperty(value="名称")
 	private String roleName;
 
-	@ApiModelProperty(value="权限集",required=true)
+	@ApiModelProperty(value="权限集")
 	private String newpermissions;
 
 	public String getNewpermissions() {
@@ -29,19 +24,19 @@ public class SysRoleForm  {
 		this.newpermissions = newpermissions;
 	}
 
-	public String getRoleId() {
-		return roleId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 

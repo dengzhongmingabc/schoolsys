@@ -180,4 +180,10 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 		public void delPermission(long delPermissionId)  throws Exception {
 			 spDao.delPermission(delPermissionId);
 		}
+
+
+	public List allPermission() throws Exception{
+		return spDao.allPermission();
+	}
+
 }

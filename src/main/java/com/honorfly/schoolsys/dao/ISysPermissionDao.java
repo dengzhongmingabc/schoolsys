@@ -30,8 +30,6 @@ public interface ISysPermissionDao extends IBaseDao {
 
 	public void delPermission(long delPermissionId) throws Exception  ;
 
-
-
-
+	public List allPermission() throws Exception  ;
 
 }

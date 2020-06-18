@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/sys/user/")
 public class SysUserAction extends BaseController {
 
-	/*@Autowired
+/*
+	@Autowired
 	private ISysUserService sysUserService;
 
 
@@ -377,7 +378,7 @@ public class SysUserAction extends BaseController {
 		}
 	}
 
-	*//**
+	*
 	 *
 	 * @Title:        listRoles
 	 * @Description:  TODO 角色列表
@@ -389,7 +390,7 @@ public class SysUserAction extends BaseController {
 	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月11日 上午11:52:23
-	 *//*
+
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/listRoles", method = {RequestMethod.GET, RequestMethod.POST})
 	public String listRoles(HttpServletRequest request, HttpServletResponse response,String search) {
@@ -416,9 +417,9 @@ public class SysUserAction extends BaseController {
     }
 
 
+
+
 */
-
-
 
 
 
