@@ -912,11 +912,6 @@ public class SysPermissionAction extends BaseController {
 			list.add(mo);
 		}
 		page.setData(list);
-		page.setPageNo(page.getPageNo());
-		Map tse = new HashMap();
-		tse.put("page",page);
-		com.alibaba.fastjson.JSON json = new JSONObject(tse);
-		System.out.println(json);
 		return ResultGenerator.genSuccessResult(page);
 	}
 
