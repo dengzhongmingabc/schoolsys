@@ -12,9 +12,9 @@ import java.util.Map;
 
 
 public interface ISysUserService extends IBaseService {
-	public Page roleListByPage(String search, int currentPage, int pageSize) throws Exception;
+	public Page roleListByPage(Map<String,String> search, int currentPage, int pageSize) throws Exception;
 
-	public Page userListByPage(Map where, int currentPage, int pageSize) throws Exception;
+	public Page userPageList(Map where, int currentPage, int pageSize) throws Exception;
 
 	public List userList(String search) throws Exception;
 
@@ -39,4 +39,6 @@ public interface ISysUserService extends IBaseService {
 	public List listRolesByName(String name) throws Exception ;
 
 	public List listProxy2(Map<String, String> where) throws Exception ;
+
+	public List roleList(Map where) throws Exception;
 }

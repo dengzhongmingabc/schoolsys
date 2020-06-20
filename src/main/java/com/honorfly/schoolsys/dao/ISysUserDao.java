@@ -12,9 +12,9 @@ import java.util.Map;
 
 
 public interface ISysUserDao extends IBaseDao {
-	public Page roleListByPage(String search, int currentPage, int pageSize) throws Exception;
+	public Page roleListByPage(Map<String,String> search, int currentPage, int pageSize) throws Exception;
 
-	public Page userListByPage(Map<String, String> where, int currentPage, int pageSize) throws Exception;
+	public Page userPageList(Map<String, String> where, int currentPage, int pageSize) throws Exception;
 
 	public List userList(String search) throws Exception ;
 

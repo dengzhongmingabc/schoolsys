@@ -89,6 +89,15 @@ public class SysPermissionDaoImpl extends BaseDaoImpl implements ISysPermissionD
 		return this.loadBySQL(sb.toString(), null, SysPermission.class);
     }
 
+	public void editRoleBatch(String idString,int invalid) throws Exception {
+		StringBuffer sb = new StringBuffer("update sys_role set invalid=:invalid where id in(");
+		sb.append(idString);
+		sb.append(")");
+		Map args = new HashMap();
+		args.put("invalid", invalid);
+		this.executeSQL(sb.toString(),args);
+	}
+
 	public List rolePermissionByRoleID(String roleId) throws Exception {
 		StringBuffer sb = new StringBuffer("select * from sys_role_permission where role_id='"+roleId+"'");
 		return this.loadMapBySQL(sb.toString());

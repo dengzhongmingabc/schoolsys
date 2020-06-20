@@ -18,14 +18,18 @@ import java.util.Map;
 public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 
 
-	public Page roleListByPage(String search, int currentPage, int pageSize) throws Exception {
-		StringBuffer sbsql = new StringBuffer(" select sysuser.* from sys_role sysuser where 1=1 ");
+	public Page roleListByPage(Map<String,String> search, int currentPage, int pageSize) throws Exception {
+		StringBuffer sbsql = new StringBuffer(" select role.* from sys_role role where 1=1 ");
 		Map args = new HashMap();
-		if(!StringUtils.isBlank(search)){
-			sbsql.append(" and  sysuser.role_name like :content");
-			args.put("content", "%"+search+"%");
+		if(!StringUtils.isBlank(search.get("name"))){
+			sbsql.append(" and  role.role_name like :content");
+			args.put("content", "%"+search.get("name")+"%");
 		}
-		sbsql.append(" order by sysuser.created_date desc");
+		if(!StringUtils.isBlank(search.get("invalid"))){
+			sbsql.append(" and  role.invalid = :invalid");
+			args.put("invalid", Boolean.valueOf(search.get("invalid")));
+		}
+		sbsql.append(" order by role.created_date desc");
 		return PageFactory.createPageBySql(this, sbsql.toString(), args, SysRole.class, currentPage, pageSize);
     }
 
@@ -43,22 +47,26 @@ public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 		return null;
     }
 
-	public Page userListByPage(Map<String,String> where,int currentPage,int pageSize) throws Exception {
+	public Page userPageList(Map<String,String> where,int currentPage,int pageSize) throws Exception {
 		StringBuffer sbsql = new StringBuffer(" select sysuser.* from sys_user sysuser where 1=1 ");
 		Map args = new HashMap();
-		if(!StringUtils.isBlank(where.get("name"))){
-			sbsql.append(" and  (sysuser.real_name like :content or sysuser.user_name like :content) ");
-			args.put("content", "%"+where.get("name")+"%");
+		if(!StringUtils.isBlank(where.get("userName"))){
+			sbsql.append(" and  (sysuser.user_name like :userName) ");
+			args.put("userName", "%"+where.get("userName")+"%");
 		}
-		if(!StringUtils.isBlank(where.get("proxyId"))){
-			sbsql.append(" and  sysuser.parent_id = :parentId");
-			args.put("parentId", Long.valueOf(where.get("proxyId")));
+		if(!StringUtils.isBlank(where.get("mobile"))){
+			sbsql.append(" and  (sysuser.mobile like :mobile) ");
+			args.put("mobile", "%"+where.get("mobile")+"%");
 		}
-		if(!StringUtils.isBlank(where.get("department"))){
-			sbsql.append(" and  sysuser.department = :department");
-			args.put("department", where.get("department"));
+		if(!StringUtils.isBlank(where.get("realName"))){
+			sbsql.append(" and  (sysuser.real_name like :realName) ");
+			args.put("realName", "%"+where.get("realName")+"%");
 		}
-		sbsql.append(" order by sysuser.created_date desc");
+		if(!StringUtils.isBlank(where.get("invalid"))){
+			sbsql.append(" and  sysuser.invalid = :invalid");
+			args.put("invalid", Boolean.valueOf(where.get("invalid")));
+		}
+		sbsql.append(" order by id desc");
 		return PageFactory.createPageBySql(this, sbsql.toString(), args, SysUser.class, currentPage, pageSize);
     }
 

@@ -186,4 +186,8 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 		return spDao.allPermission();
 	}
 
+	public void editRoleBatch(String idString,int invalid) throws Exception {
+		spDao.editRoleBatch(idString,invalid);
+	}
+
 }

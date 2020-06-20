@@ -4,7 +4,6 @@ package com.honorfly.schoolsys.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
@@ -25,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -855,13 +855,6 @@ public class SysPermissionAction extends BaseController {
 			sysRole = sysPermissionService.getById(SysRole.class,sysRoleForm.getId());
 		}
 		BeanUtils.copyProperties(sysRoleForm,sysRole);
-		if(!StringUtils.isBlank(sysRoleForm.getNewpermissions())){
-			List<SysPermission> dics = sysPermissionService.listSysPermissionByIDString(sysRoleForm.getNewpermissions());
-			sysRole.getPermissions().clear();
-			sysRole.getPermissions().addAll(dics);
-		}else{
-			sysRole.getPermissions().clear();
-		}
 		sysPermissionService.update(sysRole);
 		return ResultGenerator.genSuccessResult();
     }
@@ -896,9 +889,14 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/rolePageList",method = RequestMethod.POST)
-	public Result roleListByPage(String search,int pageNo,int pageSize) throws Exception{
-		if(!StringUtils.isBlank(search)){
-			search = URLDecoder.decode(search,"UTF-8");
+	public Result roleListByPage(String name,Boolean invalid,int pageNo,int pageSize) throws Exception{
+		Map<String,String> search = new HashMap<String,String>();
+		if(!StringUtils.isBlank(name)){
+			name = URLDecoder.decode(name,"UTF-8");
+			search.put("name",name);
+		}
+		if(invalid!=null){
+			search.put("invalid",invalid+"");
 		}
 		Page page = sysUserService.roleListByPage(search, pageNo, pageSize);
 		List<Map> list = new ArrayList<Map>();
@@ -908,8 +906,9 @@ public class SysPermissionAction extends BaseController {
 			mo.put("key", ((SysRole)sm).getId());
 			mo.put("roleName", ((SysRole)sm).getRoleName());
 			mo.put("createTime", ((SysRole)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysRole)sm).getCreatedDate()));
-			mo.put("status","有效");
+			mo.put("invalid",((SysRole) sm).getInvalid());
 			list.add(mo);
+
 		}
 		page.setData(list);
 		return ResultGenerator.genSuccessResult(page);
@@ -933,5 +932,226 @@ public class SysPermissionAction extends BaseController {
 		sysRole.getPermissions().addAll(syspermission);
 		sysUserService.save(sysRole);
 		return ResultGenerator.genSuccessResult();
+	}
+
+	@ApiOperation(value="批量修改角色")
+	@ResponseBody
+	@RequestMapping(value = "/editRoleBatch",method = RequestMethod.POST)
+	public Result editRoleBatch(String idsStr,int invalid) throws Exception {
+		if(StringUtils.isBlank(idsStr)){
+			return ResultGenerator.genFailResult("idsStr不能为空！");
+		}
+		sysPermissionService.editRoleBatch(idsStr,invalid);
+		return ResultGenerator.genSuccessResult();
+	}
+
+
+	@ApiOperation(value="用户分页列表")
+	@ResponseBody
+	@RequestMapping(value = "/userPageList",method = RequestMethod.POST)
+	public Result userPageList(String mobile,
+							   String realName,
+							   String userName,
+							   Boolean invalid,
+							   int pageNo,int pageSize) throws Exception{
+		Map<String,String> search = new HashMap<String,String>();
+		if(!StringUtils.isBlank(userName)){
+			userName = URLDecoder.decode(userName,"UTF-8");
+			search.put("userName",userName);
+		}
+		if(!StringUtils.isBlank(realName)){
+			realName = URLDecoder.decode(realName,"UTF-8");
+			search.put("realName",realName);
+		}
+		if(!StringUtils.isBlank(mobile)){
+			mobile = URLDecoder.decode(mobile,"UTF-8");
+			search.put("mobile",mobile);
+		}
+		if(invalid!=null){
+			search.put("invalid",invalid+"");
+		}
+		Page page = sysUserService.userPageList(search, pageNo, pageSize);
+		List<Map> list = new ArrayList<Map>();
+		for(Object sm:page.getData()){
+			Map mo = new HashMap();
+			mo.put("id", ((SysUser)sm).getId());
+			mo.put("realName", ((SysUser)sm).getRealName());
+			mo.put("userName", ((SysUser)sm).getUserName());
+			mo.put("mobile", ((SysUser)sm).getMobile());
+			mo.put("position", ((SysUser)sm).getPosition());
+			mo.put("createTime", ((SysUser)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysUser)sm).getCreatedDate()));
+			mo.put("invalid",((SysUser) sm).getInvalid());
+			list.add(mo);
+		}
+		page.setData(list);
+		return ResultGenerator.genSuccessResult(page);
+	}
+
+	@ApiOperation(value="角色列表列表")
+	@ResponseBody
+	@RequestMapping(value = "/roleList",method = RequestMethod.POST)
+	public Result roleList() throws Exception{
+		Map search = new HashMap<String,String>();
+		search.put("invalid",true);
+		List roles = sysUserService.roleList(search);
+		List<Map> list = new ArrayList<Map>();
+		for(Object sm:roles){
+			Map mo = new HashMap();
+			mo.put("id", ((SysRole)sm).getId());
+			mo.put("realName", ((SysRole)sm).getRoleName());
+			list.add(mo);
+		}
+		return ResultGenerator.genSuccessResult(list);
+	}
+
+
+	@ApiOperation(value="保存用户信息")
+	@ResponseBody
+	@RequestMapping(value = "/saveSysUser",method = RequestMethod.POST)
+	public Result saveSysUser(
+						   String userName,
+						   String password,
+						   String realName,
+						   String empNumber,
+						   String position,
+						   Boolean invalid,
+						   Integer status,
+						   String newRoles,
+						   String department,
+						   String mobile) throws Exception {
+		if(StringUtils.isBlank(userName)||
+				StringUtils.isBlank(realName)||
+				StringUtils.isBlank(position)){
+			return ResultGenerator.genFailResult("idsStr不能为空！");
+		}
+		SysUser  dd = new SysUser();
+		if(status!=null){
+			dd.setStatus(status);
+		}
+		if(invalid!=null){
+			dd.setInvalid(invalid);
+		}
+		SysUser dd2 = sysUserService.queryUserByName(userName);
+		if(dd2!=null){
+			return ResultGenerator.genFailResult("用户名已被占用！");
+		}
+		if(!StringUtils.isBlank(userName)){
+			dd.setUserName(userName);
+		}
+		if(!StringUtils.isBlank(password)){
+			password = DigestUtils.md5DigestAsHex(password.getBytes());
+			dd.setPassword(password);
+		}
+		if(!StringUtils.isBlank(realName)){
+			dd.setRealName(realName);
+		}
+		if(!StringUtils.isBlank(empNumber)){
+			dd.setEmpNumber(empNumber);
+		}
+		if(!StringUtils.isBlank(department)){
+			dd.setDepartment(department);
+		}
+		if(!StringUtils.isBlank(mobile)){
+			dd.setMobile(mobile);
+		}
+		if(!StringUtils.isBlank(position)){
+			dd.setPosition(position);
+		}
+		if(!StringUtils.isBlank(newRoles)){
+			List<SysRole> roles = sysUserService.listRolesByIDString(newRoles);
+			dd.getRoles().clear();
+			dd.getRoles().addAll(roles);
+		}else{
+			dd.getRoles().clear();
+		}
+		sysUserService.update(dd);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@ApiOperation(value="修改用户信息")
+	@ResponseBody
+	@RequestMapping(value = "/editSysUser",method = RequestMethod.POST)
+	public Result editSysUser(
+			long id,
+			String userName,
+			String password,
+			String realName,
+			String empNumber,
+			String position,
+			Boolean invalid,
+			Integer status,
+			String newRoles,
+			String department,
+			String mobile) throws Exception {
+		if(StringUtils.isBlank(userName)||
+				StringUtils.isBlank(realName)||
+				StringUtils.isBlank(position)){
+			return ResultGenerator.genFailResult("idsStr不能为空！");
+		}
+		SysUser  dd = sysUserService.getById(SysUser.class,id);
+		if(status!=null){
+			dd.setStatus(status);
+		}
+		if(invalid!=null){
+			dd.setInvalid(invalid);
+		}
+		SysUser dd2 = sysUserService.queryUserByName(userName);
+		if(dd2!=null&&dd2.getId().longValue()!=dd.getId().longValue()){
+			return ResultGenerator.genFailResult("用户名已被占用！");
+		}
+		if(!StringUtils.isBlank(userName)){
+			dd.setUserName(userName);
+		}
+		if(!StringUtils.isBlank(password)){
+			password = DigestUtils.md5DigestAsHex(password.getBytes());
+			dd.setPassword(password);
+		}
+		if(!StringUtils.isBlank(realName)){
+			dd.setRealName(realName);
+		}
+		if(!StringUtils.isBlank(empNumber)){
+			dd.setEmpNumber(empNumber);
+		}
+		if(!StringUtils.isBlank(department)){
+			dd.setDepartment(department);
+		}
+		if(!StringUtils.isBlank(mobile)){
+			dd.setMobile(mobile);
+		}
+		if(!StringUtils.isBlank(position)){
+			dd.setPosition(position);
+		}
+		if(!StringUtils.isBlank(newRoles)){
+			List<SysRole> roles = sysUserService.listRolesByIDString(newRoles);
+			dd.getRoles().clear();
+			dd.getRoles().addAll(roles);
+		}else{
+			dd.getRoles().clear();
+		}
+		sysUserService.update(dd);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@ApiOperation(value="删除系统用户")
+	@ResponseBody
+	@RequestMapping(value = "/deleteSysUser",method = RequestMethod.POST)
+	public Result deleteSysUser(long id) throws Exception {
+		sysUserService.delete(SysUser.class,id);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@ApiOperation(value="系统用户详情")
+	@ResponseBody
+	@RequestMapping(value = "/detailSysUser",method = RequestMethod.POST)
+	public Result detailSysUser(long id) throws Exception {
+		SysUser sysUser = sysUserService.getById(SysUser.class,id);
+		Map result = new HashMap();
+		result.put("id",sysUser.getId());
+		List roles = new ArrayList();
+		for(SysRole sysRole:sysUser.getRoles()){
+			roles.add(sysRole.getId());
+		}
+		result.put("roles",roles);
+		return ResultGenerator.genSuccessResult(result);
 	}
 }

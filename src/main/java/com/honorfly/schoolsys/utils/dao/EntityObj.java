@@ -18,13 +18,13 @@ import java.util.Locale;
 @MappedSuperclass
 public class EntityObj implements Serializable, IElement {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1863560649962507646L;
 
 	// 把日志记录到log4j中输�?
 	private static final Log logger = LogFactory.getLog(EntityObj.class);
-	
+
 	public static  enum Status{start,end,ineffective,effective};
     /*实体ID*/
     @Id
@@ -43,10 +43,10 @@ public class EntityObj implements Serializable, IElement {
     public Date lastModifiedDate;
     /*是否有效*/
     @Column(name = "invalid")
-    public Boolean invalid;
+    public Boolean invalid=true;
     /*状态*/
     @Column(name = "status")
-    public int status;
+    public int status=1;
 
     /*扩充字段，json*/
     @Column(name = "other")
@@ -74,7 +74,7 @@ public class EntityObj implements Serializable, IElement {
      * 无参构�?�函数，构�?�一个无效的实体
      */
     public EntityObj() {
-        status = 0;
+        status = 1;
         createdDate = new Date();
         lastModifiedDate = new Date();
         invalid = Boolean.valueOf(true);
@@ -85,7 +85,7 @@ public class EntityObj implements Serializable, IElement {
      * 剪切字符�?
      * @param s - 源字符串
      * @param i - 长度
-     * @return 剪切后的字符�? 
+     * @return 剪切后的字符�?
      */
     public String cutString(String s, int i) {
         int j = s.length() <= i ? s.length() : i;
@@ -108,12 +108,12 @@ public class EntityObj implements Serializable, IElement {
         return simpledateformat.parse(s);
     }
 
-    
+
     public void accept(IVisitor ivisitor) {
         ivisitor.visit(this);
     }
-    
-    
+
+
     /**
      * 判断是否同一实例
      */
@@ -136,7 +136,7 @@ public class EntityObj implements Serializable, IElement {
         return id == null ? super.hashCode() : id.hashCode();
     }
 
-    
+
     /**
      * @return 返回由属性字段Field组成的属性名数组
      */
@@ -155,7 +155,7 @@ public class EntityObj implements Serializable, IElement {
         return as;
     }
 
-    
+
     /**
      * 获得指定属�?�名的�??
      * @param s - 属�?�名�?
@@ -174,7 +174,7 @@ public class EntityObj implements Serializable, IElement {
         return obj;
     }
 
-    
+
     /**
      * 设置指定属�?�名的�??
      * @param s - 属�?�名�?
@@ -221,12 +221,12 @@ public class EntityObj implements Serializable, IElement {
         }
     }
 
-    
+
     private String makeNewLine(String s) {
         return (new StringBuilder(String.valueOf(s))).append("\n").toString();
     }
 
-    
+
     private String makePropertyXML(String s) {
         StringBuilder stringbuilder = new StringBuilder();
         Object obj = getPropertyValue(s);
@@ -244,7 +244,7 @@ public class EntityObj implements Serializable, IElement {
         return stringbuilder.toString();
     }
 
-    
+
     /**
      * 实体转换成xml
      * @return xml格式的字符串
@@ -270,7 +270,7 @@ public class EntityObj implements Serializable, IElement {
         return stringbuilder.toString();
     }
 
-    
+
     private void setValue(String s, String s1) {
         String s2 = (new StringBuilder("<")).append(s1).append(">").toString();
         String s3 = (new StringBuilder("</")).append(s1).append(">").toString();
@@ -286,7 +286,7 @@ public class EntityObj implements Serializable, IElement {
         }
     }
 
-    
+
     /**
      * 根据xml初始化实体属�?
      * @param s - xml格式的字符串
@@ -302,7 +302,7 @@ public class EntityObj implements Serializable, IElement {
 
     }
 
-    
+
     /**
      * 根据另外�?个实体初始化本实体的属�??
      * @param entity

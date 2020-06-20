@@ -18,13 +18,17 @@ public class SysUserServiceImpl extends BaseService implements ISysUserService {
 	@Autowired
 	private ISysUserDao sysUserDao;
 
-	public Page roleListByPage(String search, int currentPage, int pageSize) throws Exception {
+	public Page roleListByPage(Map<String,String> search, int currentPage, int pageSize) throws Exception {
 		return sysUserDao.roleListByPage(search, currentPage, pageSize);
     }
 
-	public Page userListByPage(Map where,int currentPage,int pageSize) throws Exception {
-		return sysUserDao.userListByPage(where, currentPage, pageSize);
+	public Page userPageList(Map where,int currentPage,int pageSize) throws Exception {
+		return sysUserDao.userPageList(where, currentPage, pageSize);
     }
+
+	public List roleList(Map where) throws Exception {
+		return this.loadBySQL("select * from sys_role where invalid=:invalid",where,SysRole.class);
+	}
 
 	public Page userPayListByPage(Map<String,String> where,int currentPage,int pageSize) throws Exception {
 		return sysUserDao.userPayListByPage(where, currentPage, pageSize);

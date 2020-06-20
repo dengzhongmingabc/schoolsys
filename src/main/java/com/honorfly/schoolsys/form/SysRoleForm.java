@@ -16,6 +16,17 @@ public class SysRoleForm  {
 	@ApiModelProperty(value="权限集")
 	private String newpermissions;
 
+	@ApiModelProperty(value="状态")
+	private Boolean invalid;
+
+	public Boolean getInvalid() {
+		return invalid;
+	}
+
+	public void setInvalid(Boolean invalid) {
+		this.invalid = invalid;
+	}
+
 	public String getNewpermissions() {
 		return newpermissions;
 	}

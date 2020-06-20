@@ -29,4 +29,6 @@ public interface ISysPermissionService extends IBaseService {
 
 	public List allPermission() throws Exception;
 
+	public void editRoleBatch(String idString,int invalid) throws Exception ;
+
 }

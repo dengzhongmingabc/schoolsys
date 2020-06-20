@@ -32,4 +32,6 @@ public interface ISysPermissionDao extends IBaseDao {
 
 	public List allPermission() throws Exception  ;
 
+	public void editRoleBatch(String idString,int invalid) throws Exception;
+
 }

@@ -1,7 +1,8 @@
 package com.honorfly.schoolsys.entry;
 
+import com.honorfly.schoolsys.utils.dao.EntityObj;
+
 import javax.persistence.*;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,238 +11,161 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "sys_user")
-public class SysUser implements java.io.Serializable {
+public class SysUser extends EntityObj {
 
 	// Fields
 
-	private Long id;
+	@Column
 	private String userName;
+	@Column
 	private String password;
+	@Column
 	private String realName;
+	@Column
 	private String empNumber;
+	@Column
 	private String department;
+	@Column
 	private String position;
-	private Date createdDate;
-	private String status;
-	private Set<SysRole> roles = new HashSet<SysRole>();
-	private Long parentId;
-
-	private Long departmentId;
-
-
-	private Boolean proxyAdmin;
-
-
-	private Double balance=0.0;
-
-	private String mobile;
-
-	private Integer points = 0;
-
-	private Integer wrongCount=0;
-
-	@Column()
-	public Integer getWrongCount() {
-		return wrongCount;
-	}
-
-
-	public void setWrongCount(Integer wrongCount) {
-		this.wrongCount = wrongCount;
-	}
-
-	@Column()
-	public Integer getPoints() {
-		return points;
-	}
-
-
-	public void setPoints(Integer points) {
-		this.points = points;
-	}
-
-
-	@Column()
-	public String getMobile() {
-		return mobile;
-	}
-
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-
-
-	@Column()
-	public Double getBalance() {
-		return balance;
-	}
-
-
-	public void setBalance(Double balance) {
-		this.balance = balance;
-	}
-
-
-	@Column()
-	public Boolean getProxyAdmin() {
-		return proxyAdmin;
-	}
-
-
-	public void setProxyAdmin(Boolean proxyAdmin) {
-		this.proxyAdmin = proxyAdmin;
-	}
-
-	private Boolean mobileUser=false;
-
-	@Column()
-	public Boolean getMobileUser() {
-
-		return mobileUser;
-	}
-
-
-	public void setMobileUser(Boolean mobileUser) {
-		this.mobileUser = mobileUser;
-	}
-
-	@Column()
-	public Long getDepartmentId() {
-		return departmentId;
-	}
-
-
-	public void setDepartmentId(Long departmentId) {
-		this.departmentId = departmentId;
-	}
-
-	// Constructors
-	@Column()
-	 public Long getParentId() {
-		return parentId;
-	}
-
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-
 
 	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-     @JoinTable(
-         name="sys_user_role",
-         joinColumns=@JoinColumn(name="user_id"),
-         inverseJoinColumns=@JoinColumn(name="role_id")
-     )
-	public Set<SysRole> getRoles() {
-		return roles;
-	}
+	@JoinTable(
+			name="sys_user_role",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="role_id")
+	)
+	private Set<SysRole> roles = new HashSet<SysRole>();
 
+	@Column
+	private Long parentId;
 
-	public void setRoles(Set<SysRole> roles) {
-		this.roles = roles;
-	}
+	@Column
+	private Long departmentId;
 
-	/** default constructor */
-	public SysUser() {
-	}
+	@Column
+	private Boolean proxyAdmin;
 
-	/** full constructor */
-	public SysUser(String userName, String password, String realName,
-			String empNumber, String department, String position,
-			Date createdDate, String status) {
-		this.userName = userName;
-		this.password = password;
-		this.realName = realName;
-		this.empNumber = empNumber;
-		this.department = department;
-		this.position = position;
-		this.createdDate = createdDate;
-		this.status = status;
-	}
+	@Column
+	private Double balance=0.0;
 
-	// Property accessors
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getId() {
-		return this.id;
-	}
+	@Column
+	private String mobile;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	@Column
+	private Integer points = 0;
 
-	@Column(name = "user_name")
+	@Column
+	private Integer wrongCount=0;
+
 	public String getUserName() {
-		return this.userName;
+		return userName;
 	}
 
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	@Column(name = "password")
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	@Column(name = "real_name")
 	public String getRealName() {
-		return this.realName;
+		return realName;
 	}
 
 	public void setRealName(String realName) {
 		this.realName = realName;
 	}
 
-	@Column(name = "emp_number")
 	public String getEmpNumber() {
-		return this.empNumber;
+		return empNumber;
 	}
 
 	public void setEmpNumber(String empNumber) {
 		this.empNumber = empNumber;
 	}
 
-	@Column(name = "department")
 	public String getDepartment() {
-		return this.department;
+		return department;
 	}
 
 	public void setDepartment(String department) {
 		this.department = department;
 	}
 
-	@Column(name = "position")
 	public String getPosition() {
-		return this.position;
+		return position;
 	}
 
 	public void setPosition(String position) {
 		this.position = position;
 	}
 
-	@Column(name = "created_date", length = 19)
-	public Date getCreatedDate() {
-		return this.createdDate;
+	public Set<SysRole> getRoles() {
+		return roles;
 	}
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public void setRoles(Set<SysRole> roles) {
+		this.roles = roles;
 	}
 
-	@Column(name = "status")
-	public String getStatus() {
-		return this.status;
+	public Long getParentId() {
+		return parentId;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
+	public Long getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(Long departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public Boolean getProxyAdmin() {
+		return proxyAdmin;
+	}
+
+	public void setProxyAdmin(Boolean proxyAdmin) {
+		this.proxyAdmin = proxyAdmin;
+	}
+
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public Integer getPoints() {
+		return points;
+	}
+
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
+
+	public Integer getWrongCount() {
+		return wrongCount;
+	}
+
+	public void setWrongCount(Integer wrongCount) {
+		this.wrongCount = wrongCount;
+	}
 }
