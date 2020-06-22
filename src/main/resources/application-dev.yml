@@ -66,3 +66,12 @@ logging:
 
 database:
   pagefix: offset
+
+
+## JWT
+# header:凭证(校验的变量名), expire:有效期1天(单位:s), secret:秘钥(普通字符串)
+app:
+  jwt:
+    header: token
+    expire: 60
+    secret: aHR0cHM6Ly9teS5vc2NoaW5hLm5ldC91LzM2ODE4Njg=

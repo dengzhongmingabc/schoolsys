@@ -2,63 +2,41 @@ package com.honorfly.schoolsys.entry;
 
 import com.honorfly.schoolsys.utils.dao.EntityObj;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * SysUser entity. @author MyEclipse Persistence Tools
- */
-@Entity
-@Table(name = "sys_user")
-public class SysUser extends EntityObj {
+
+public class SessionUser extends EntityObj {
 
 	// Fields
 
-	@Column
 	private String userName;
-	@Column
 	private String password;
-	@Column
 	private String realName;
-	@Column
 	private String empNumber;
-	@Column
 	private String department;
-	@Column
 	private String position;
 
-	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
-	@JoinTable(
-			name="sys_user_role",
-			joinColumns=@JoinColumn(name="user_id"),
-			inverseJoinColumns=@JoinColumn(name="role_id")
-	)
+
 	private Set<SysRole> roles = new HashSet<SysRole>();
 
-	@Column
 	private Long parentId;
 
-	@Column
 	private Long departmentId;
 
-	@Column
 	private Boolean proxyAdmin;
 
-	@Column
 	private Double balance=0.0;
 
-	@Column
 	private String mobile;
 
-	@Column
 	private Integer points = 0;
 
-	@Column
 	private Integer wrongCount=0;
 
+	public List<SysPermission> buttons = new ArrayList<SysPermission>();
 
 	public String getUserName() {
 		return userName;

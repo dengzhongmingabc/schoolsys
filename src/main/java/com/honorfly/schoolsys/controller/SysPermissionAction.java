@@ -4,6 +4,7 @@ package com.honorfly.schoolsys.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.honorfly.schoolsys.entry.SessionUser;
 import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
@@ -13,23 +14,16 @@ import com.honorfly.schoolsys.form.SysRoleForm;
 import com.honorfly.schoolsys.form.UserLoginForm;
 import com.honorfly.schoolsys.service.ISysPermissionService;
 import com.honorfly.schoolsys.service.ISysUserService;
-import com.honorfly.schoolsys.utils.AppConst;
-import com.honorfly.schoolsys.utils.DateUtil;
-import com.honorfly.schoolsys.utils.Result;
-import com.honorfly.schoolsys.utils.ResultGenerator;
+import com.honorfly.schoolsys.utils.*;
 import com.honorfly.schoolsys.utils.service.Page;
 import com.honorfly.schoolsys.utils.web.BaseController;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -37,7 +31,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 
-@Controller
+@RestController
 @RequestMapping("/sys/user/")
 public class SysPermissionAction extends BaseController {
 
@@ -51,7 +45,7 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/userLogin",method = RequestMethod.POST)
 	public Result userLogin(@RequestBody @Valid UserLoginForm userLoginForm, BindingResult bindingResult) throws Exception{
-		/*if(bindingResult.hasErrors()){
+		if(bindingResult.hasErrors()){
 			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
 		}
 		HttpSession session = request.getSession();
@@ -61,22 +55,26 @@ public class SysPermissionAction extends BaseController {
 			return ResultGenerator.genFailResult(ResultCode.AUTH_FAIL,"账号密码错误");
 		}
 		if(passWord.endsWith(user.getPassword())){
+			SessionUser sessionUser = new SessionUser();
+			BeanUtils.copyProperties(user,sessionUser);
 			for(SysRole role:user.getRoles()){
 				if(role.getPermissions()!=null&&role.getPermissions().size()>0){
-					role.buttons.addAll(role.getPermissions());
+					sessionUser.buttons.addAll(role.getPermissions());
 				}
 			}
-			sysPermissionService.save(user);
-			session.setAttribute(AppConst.USER_KEY, user);
-		}*/
-		Map responseData = new HashMap();
-		responseData.put("name","邓忠明");
-		responseData.put("token","4291d7da9005377ec9aec4a71ea837f");
-		responseData.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
-		responseData.put("status","1");
-		responseData.put("username","admin");
-		responseData.put("roleId","admin");
-		return ResultGenerator.genSuccessResult(responseData);
+			session.setAttribute(AppConst.USER_KEY, sessionUser);
+			Map responseData = new HashMap();
+			responseData.put("name","邓忠明");
+			responseData.put("token","4291d7da9005377ec9aec4a71ea837f");
+			responseData.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
+			responseData.put("status","1");
+			responseData.put("username","admin");
+			responseData.put("roleId","admin");
+			return ResultGenerator.genSuccessResult(responseData);
+		}else{
+			return ResultGenerator.genFailResult(ResultCode.AUTH_FAIL,"账号密码错误");
+		}
+
     }
 /*
 	@ApiOperation(value="用户导航")
@@ -889,7 +887,7 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/rolePageList",method = RequestMethod.POST)
-	public Result roleListByPage(String name,Boolean invalid,int pageNo,int pageSize) throws Exception{
+	public Result roleListByPage(String name,@RequestParam Boolean invalid,int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(name)){
 			name = URLDecoder.decode(name,"UTF-8");
@@ -952,7 +950,7 @@ public class SysPermissionAction extends BaseController {
 	public Result userPageList(String mobile,
 							   String realName,
 							   String userName,
-							   Boolean invalid,
+							   @RequestParam Boolean invalid,
 							   int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(userName)){
@@ -1014,7 +1012,7 @@ public class SysPermissionAction extends BaseController {
 						   String realName,
 						   String empNumber,
 						   String position,
-						   Boolean invalid,
+						   @RequestParam Boolean invalid,
 						   Integer status,
 						   String newRoles,
 						   String department,
@@ -1078,7 +1076,7 @@ public class SysPermissionAction extends BaseController {
 			String realName,
 			String empNumber,
 			String position,
-			Boolean invalid,
+			@RequestParam Boolean invalid,
 			Integer status,
 			String newRoles,
 			String department,

@@ -25,7 +25,7 @@ public class SysRole  extends EntityObj {
 	)
 	private Set<SysPermission> permissions = new HashSet<SysPermission>();
 
-	//public List<SysPermission> buttons = new ArrayList<SysPermission>();
+
 	// Constructors
 
 

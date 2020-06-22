@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ public class SysManagerController extends BaseController {
     @Autowired
     private BaseService baseService;
 
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @ApiOperation(value="用戶登錄")
     @ResponseBody
     @RequestMapping(value = "/userLogin",method = RequestMethod.POST)

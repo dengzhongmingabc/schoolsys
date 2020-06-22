@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/sys/user/")
+@RequestMapping("/sys/test/")
 public class SysUserAction extends BaseController {
 
 /*
