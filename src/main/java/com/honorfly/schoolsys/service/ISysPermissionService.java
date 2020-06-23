@@ -31,4 +31,6 @@ public interface ISysPermissionService extends IBaseService {
 
 	public void editRoleBatch(String idString,int invalid) throws Exception ;
 
+	public SysUser loadUser(String userName) throws Exception ;
+
 }

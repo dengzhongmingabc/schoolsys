@@ -5,15 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  *
@@ -23,13 +16,13 @@ public class SessionInterceptor implements HandlerInterceptor
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
-        StringBuffer sb = new StringBuffer();
+ /*       StringBuffer sb = new StringBuffer();
         Enumeration<String> keys = request.getParameterNames();
         while(keys.hasMoreElements()) {
             String k = keys.nextElement();
             sb.append("\n"+k + " = " + request.getParameter(k) );
         }
-        logger.info("\nuri:"+request.getRequestURI()+" \n参数："+sb.toString());
+        logger.info("\nuri:"+request.getRequestURI()+" \n参数："+sb.toString());*/
         return true;
     }
 

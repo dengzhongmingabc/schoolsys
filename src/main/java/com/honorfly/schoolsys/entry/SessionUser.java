@@ -1,19 +1,19 @@
 package com.honorfly.schoolsys.entry;
 
 import com.honorfly.schoolsys.utils.dao.EntityObj;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 
-public class SessionUser extends EntityObj {
+public class SessionUser extends EntityObj implements UserDetails, Serializable {
 
 	// Fields
 
-	private String userName;
-	private String password;
+
+
 	private String realName;
 	private String empNumber;
 	private String department;
@@ -36,15 +36,45 @@ public class SessionUser extends EntityObj {
 
 	private Integer wrongCount=0;
 
+
+	private String username;
+	private String password;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
 	public List<SysPermission> buttons = new ArrayList<SysPermission>();
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 
 	public String getPassword() {
 		return password;

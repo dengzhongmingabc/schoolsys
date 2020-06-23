@@ -32,6 +32,9 @@ public class SelfCecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Autowired
+    CORSFilter corsFilter;
+
 
     @Autowired
     LoginSuccesshandler loginSuccesshandler;
@@ -48,14 +51,14 @@ public class SelfCecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-               /* .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//用jwt token后 将原来的session 改成无状态
+                /*.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//用jwt token后 将原来的session 改成无状态
                 .and()*/
                 .httpBasic().authenticationEntryPoint(selfAuthenticationEntryPoint) //设置无权限处理器
                 .and()
                 //.authenticated()
                 .authorizeRequests().anyRequest().access("@selfrbacservice.hasPermission(request, authentication)")//设置权限过虑器
                 .and()
-                .formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
+                .formLogin().loginPage("/login").loginProcessingUrl("/login")
                 .successHandler(loginSuccesshandler)
                 .failureHandler(loginFailHandler).permitAll()//和表单登录相关的接口统统都直接通过
                 .and()
@@ -71,9 +74,11 @@ public class SelfCecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .and()
                 .csrf().disable();
-
                 http.exceptionHandling().accessDeniedHandler(myAccessDeniedHandler);
                 http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
+
+
 }

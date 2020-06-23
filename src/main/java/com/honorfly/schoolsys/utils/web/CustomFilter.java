@@ -27,8 +27,6 @@ public  class CustomFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-
         //调用该方法后，表示过滤器经过原来的url请求处理方法
         logger.info("---------------处理-------------");
         filterChain.doFilter(servletRequest, servletResponse);

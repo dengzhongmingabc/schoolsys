@@ -887,7 +887,7 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/rolePageList",method = RequestMethod.POST)
-	public Result roleListByPage(String name,@RequestParam Boolean invalid,int pageNo,int pageSize) throws Exception{
+	public Result roleListByPage(String name, Boolean invalid,int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(name)){
 			name = URLDecoder.decode(name,"UTF-8");
@@ -950,7 +950,7 @@ public class SysPermissionAction extends BaseController {
 	public Result userPageList(String mobile,
 							   String realName,
 							   String userName,
-							   @RequestParam Boolean invalid,
+							   Boolean invalid,
 							   int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(userName)){
@@ -1012,7 +1012,7 @@ public class SysPermissionAction extends BaseController {
 						   String realName,
 						   String empNumber,
 						   String position,
-						   @RequestParam Boolean invalid,
+						   Boolean invalid,
 						   Integer status,
 						   String newRoles,
 						   String department,
@@ -1076,7 +1076,7 @@ public class SysPermissionAction extends BaseController {
 			String realName,
 			String empNumber,
 			String position,
-			@RequestParam Boolean invalid,
+			Boolean invalid,
 			Integer status,
 			String newRoles,
 			String department,

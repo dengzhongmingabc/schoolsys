@@ -1,8 +1,11 @@
 package com.honorfly.schoolsys.utils.securiry;
 
+import com.alibaba.fastjson.JSON;
 import com.honorfly.schoolsys.utils.JWT;
+import com.honorfly.schoolsys.utils.ResultGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +21,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    private final String tokenHeader="Authority";
+    private final String tokenHeader="Access-Token";
 
     @Autowired
     JWT jwt;
@@ -26,7 +29,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     SelfUserDetailService selfUserDetailService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String requestHeader = request.getParameter(this.tokenHeader);
+        System.out.println(request.getRequestURI());
+        String requestHeader = request.getHeader(this.tokenHeader);
+
         Claims claim = null;
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
@@ -36,15 +41,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
             }
         }
-
-        if(authToken!=null&&claim == null){
+        if(!StringUtils.isBlank(authToken)&&claim == null){
             //过期
-        }
-        UserDetails userDetails = selfUserDetailService.loadUserByUsername(claim.getSubject());
-        if(userDetails==null){
-            //没有对应的用户，
+            response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("Need login")));
+            return;
         }
         if (claim != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = selfUserDetailService.loadUserByUsername(claim.getSubject());
            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
            SecurityContextHolder.getContext().setAuthentication(authentication);
         }

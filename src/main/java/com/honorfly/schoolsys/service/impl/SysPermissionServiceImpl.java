@@ -151,6 +151,17 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 			return spDao.userLogin(userName, password);
 		}
 
+	public SysUser loadUser(String userName) throws Exception {
+		StringBuffer sql = new StringBuffer("select * from sys_user sysuser where 1=1 ");
+		sql.append(" and sysuser.user_name=:userName ");
+		Map args = new HashMap();
+		args.put("userName", userName);
+		List<SysUser> users =  this.loadBySQL(sql.toString(), args, SysUser.class);
+		if(null!=users&&users.size()>0){
+			return users.get(0);
+		}
+		return null;
+	}
 
 		@Override
 		public List queryParent() throws Exception {
