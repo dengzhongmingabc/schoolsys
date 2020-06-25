@@ -1,8 +1,6 @@
 package com.honorfly.schoolsys.utils;
 
 
-import java.util.concurrent.TimeUnit;
-
 //
 public final class AppConst {
 
@@ -28,4 +26,6 @@ public final class AppConst {
 	public static final String NOFIND_ERR_CODE = "0404";
 	public static final String NOFIND_ERR_MSG = "没有找到对应的数据";
 
+
+	public static final String Redis_Session_Namespace = "SessionNamespace:";
 }

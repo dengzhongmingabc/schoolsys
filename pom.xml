@@ -152,6 +152,11 @@
 		</dependency>
 
 
+		<!--<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>-->
 <!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 &ndash;&gt;-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.security.oauth</groupId>-->

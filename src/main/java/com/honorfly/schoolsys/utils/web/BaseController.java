@@ -1,5 +1,7 @@
 package com.honorfly.schoolsys.utils.web;
 
+import com.honorfly.schoolsys.utils.AppConfig;
+import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,10 @@ public class BaseController{
 
 	protected static final int pageSize = 20;
 
+	@Autowired
+	protected RedisUtil redisUtil;
+	@Autowired
+	protected AppConfig appConfig;
 
 	/** servletContext */
 

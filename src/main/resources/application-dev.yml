@@ -69,10 +69,11 @@ database:
 
 
 ## JWT
-# header:凭证(校验的变量名), expire:有效期1天(单位:s), secret:秘钥(普通字符串)
+# header:凭证(校验的变量名), expire:有效期7天(单位:s), secret:秘钥(普通字符串)  86400一天   604800一个星期
 app:
   jwt:
     header: token
-    expire: 600000
+    expire: 604800
     secret: aHR0cHM6Ly9teS5vc2NoaW5hLm5ldC91LzM2ODE4Njg=
-
+  sysconfig:
+    sessionExpire: 300

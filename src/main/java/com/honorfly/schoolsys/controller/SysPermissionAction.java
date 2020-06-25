@@ -205,65 +205,7 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/info",method = RequestMethod.POST)
 	public Result info() throws Exception{
-		//new HashMap().get("xxx").toString();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    /*const roleObj =
-
-				{
-						'id':'admin',
-				name:管理员,
-				describe:拥有所有权限,
-				status:1,
-				creatorId:system,
-				createTime:1497160610259,
-				deleted:0,
-				permissions: [{
-			roleId:
-			admin,
-					permissionId:dashboard,
-					permissionName:仪表盘,
-					actions: [{
-				"action":"add", "defaultCheck":false, "describe":"新增"
-			},{
-				"action":"query", "defaultCheck":false, "describe":"查询"
-			},{
-				"action":"get", "defaultCheck":false, "describe":"详情"
-			},{
-				"action":"update", "defaultCheck":false, "describe":"修改"
-			},{
-				"action":"delete", "defaultCheck":false, "describe":"删除"
-			}],
-			actionEntitySet: [{
-				action:
-				add,
-						describe:新增,
-						defaultCheck:false
-			},{
-				action:
-				query,
-						describe:查询,
-						defaultCheck:false
-			},{
-				action:
-				get,
-						describe:详情,
-						defaultCheck:false
-			},{
-				action:
-				update,
-						describe:修改,
-						defaultCheck:false
-			},{
-				action:
-				delete,
-						describe:删除,
-						defaultCheck:false
-			}],
-			actionList:null,
-					dataAccess:null
-		}]
-	}*/
-
 		Map role = new HashMap();
 		role.put("id","admin");
 		role.put("name","管理员");
@@ -306,7 +248,6 @@ public class SysPermissionAction extends BaseController {
 		userInfo.put("username","admin");
 		userInfo.put("roleId","admin");
 		userInfo.put("role",role);
-
 		return ResultGenerator.genSuccessResult(userInfo);
 	}
 
@@ -373,6 +314,8 @@ public class SysPermissionAction extends BaseController {
 		SysUser user = (SysUser)session.getAttribute(AppConst.USER_KEY);
 		session.removeAttribute(AppConst.USER_KEY);*/
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
+		redisUtil.del(AppConst.Redis_Session_Namespace+sessionUser.getId());
 		if (auth != null){
 			new SecurityContextLogoutHandler().logout(request, response, auth);
 		}
