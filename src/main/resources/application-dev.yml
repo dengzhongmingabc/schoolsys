@@ -28,17 +28,17 @@ spring:
         stat:
           log-slow-sql: true
           slow-sql-millis: 1
-  #  redis:
-#    database: 5
-#    host: 47.106.111.54
-#    password:
-#    port: 6379
-#    timeout: 3000
-#    pool:
-#      max-idle: 500
-#      min-idle: 50
-#      max-active: 2000
-#      max-wait: 1000
+  redis:
+    database: 5
+    host: 192.168.150.3
+    password:
+    port: 6379
+    timeout: 3000
+    pool:
+      max-idle: 500
+      min-idle: 50
+      max-active: 2000
+      max-wait: 1000
   jpa:
     hibernate:
       ddl-auto: update

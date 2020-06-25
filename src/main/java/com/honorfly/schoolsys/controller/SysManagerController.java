@@ -29,7 +29,7 @@ public class SysManagerController extends BaseController {
     @Autowired
     private BaseService baseService;
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
     @ApiOperation(value="用戶登錄")
     @ResponseBody
     @RequestMapping(value = "/userLogin",method = RequestMethod.POST)

@@ -1,6 +1,5 @@
 package com.honorfly.schoolsys.entry;
 
-import com.honorfly.schoolsys.utils.dao.EntityObj;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,11 +7,11 @@ import java.io.Serializable;
 import java.util.*;
 
 
-public class SessionUser extends EntityObj implements UserDetails, Serializable {
+public class SessionUser implements UserDetails, Serializable {
 
 	// Fields
 
-
+private long id;
 
 	private String realName;
 	private String empNumber;
@@ -39,6 +38,14 @@ public class SessionUser extends EntityObj implements UserDetails, Serializable 
 
 	private String username;
 	private String password;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,8 @@ package com.honorfly.schoolsys.utils.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -37,6 +39,9 @@ public class BaseController{
 
 	@Autowired
 	protected HttpServletRequest request;
+
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
 
 	public BaseController() {
 		dto = new HashMap<String, Object>();

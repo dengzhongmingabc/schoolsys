@@ -15,7 +15,6 @@ public class CORSFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        String requestHeader = request.getParameter("username");
         response.setHeader("Access-Control-Allow-Origin", "*"); //  这里最好明确的写允许的域名
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");

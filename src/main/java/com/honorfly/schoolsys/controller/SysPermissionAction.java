@@ -21,10 +21,14 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URLDecoder;
@@ -201,7 +205,8 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/info",method = RequestMethod.POST)
 	public Result info() throws Exception{
-
+		//new HashMap().get("xxx").toString();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     /*const roleObj =
 
 				{
@@ -363,10 +368,14 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="用戶注销")
 	@ResponseBody
 	@RequestMapping(value = "/logout",method = RequestMethod.POST)
-	public Result logout() throws Exception{
-		HttpSession session = request.getSession();
+	public Result logout(HttpServletResponse response) throws Exception{
+		/*HttpSession session = request.getSession();
 		SysUser user = (SysUser)session.getAttribute(AppConst.USER_KEY);
-		session.removeAttribute(AppConst.USER_KEY);
+		session.removeAttribute(AppConst.USER_KEY);*/
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null){
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
 		return ResultGenerator.genSuccessResult();
     }
 

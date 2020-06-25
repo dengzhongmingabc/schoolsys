@@ -4,7 +4,7 @@ import com.honorfly.schoolsys.entry.SessionUser;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.service.ISysPermissionService;
-import org.springframework.beans.BeanUtils;
+import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 public class SelfUserDetailService implements UserDetailsService {
     @Autowired
     private ISysPermissionService sysPermissionService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -31,13 +34,17 @@ public class SelfUserDetailService implements UserDetailsService {
             throw new UsernameNotFoundException("没有对应的用户");
     }
         SessionUser sessionUser = new SessionUser();
-        BeanUtils.copyProperties(user,sessionUser);
         sessionUser.setUsername(user.getUserName());
+        sessionUser.setPassword(user.getPassword());
+        sessionUser.setId(user.getId());
+        sessionUser.setRealName(user.getRealName());
+        sessionUser.setParentId(user.getParentId());
         for(SysRole role:user.getRoles()){
             if(role.getPermissions()!=null&&role.getPermissions().size()>0){
                 sessionUser.buttons.addAll(role.getPermissions());
             }
         }
+        redisUtil.set("session"+user.getId(),sessionUser);
         return sessionUser;
     }
 }

@@ -21,6 +21,11 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
         resp.setContentType("application/json;charset=utf-8");
+
+
+       // SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
         SessionUser obj = (SessionUser) authentication.getPrincipal();
         String token = jwt.generateToken(obj.getId());
         resp.getWriter().write(JSON.toJSONString(ResultGenerator.genSuccessResult("Bearer "+token)));

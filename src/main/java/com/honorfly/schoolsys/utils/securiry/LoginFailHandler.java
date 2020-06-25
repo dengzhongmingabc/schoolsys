@@ -16,6 +16,6 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException exception) throws IOException, ServletException {
         resp.setContentType("application/json;charset=utf-8");
-        resp.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("登录失败")));
+        resp.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("账号密码不正确。请重试！")));
     }
 }
