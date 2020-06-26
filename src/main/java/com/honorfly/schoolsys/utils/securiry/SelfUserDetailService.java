@@ -1,7 +1,6 @@
 package com.honorfly.schoolsys.utils.securiry;
 
 import com.honorfly.schoolsys.entry.SessionUser;
-import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.service.ISysPermissionService;
 import com.honorfly.schoolsys.utils.AppConfig;
@@ -40,11 +39,11 @@ public class SelfUserDetailService implements UserDetailsService {
         sessionUser.setId(user.getId());
         sessionUser.setRealName(user.getRealName());
         sessionUser.setParentId(user.getParentId());
-        for(SysRole role:user.getRoles()){
+        /*for(SysRole role:user.getRoles()){
             if(role.getPermissions()!=null&&role.getPermissions().size()>0){
                 sessionUser.buttons.addAll(role.getPermissions());
             }
-        }
+        }*/
         return sessionUser;
     }
 }

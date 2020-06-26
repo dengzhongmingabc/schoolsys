@@ -1,6 +1,7 @@
 package com.honorfly.schoolsys.service.impl;
 
 import com.honorfly.schoolsys.dao.ISysPermissionDao;
+import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.service.ISysPermissionService;
@@ -199,6 +200,20 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 
 	public void editRoleBatch(String idString,int invalid) throws Exception {
 		spDao.editRoleBatch(idString,invalid);
+	}
+
+
+	public List<SysPermission> getPermissionsByParentId(List<SysPermission> list,Long parentId){
+		List<SysPermission> result = new ArrayList<SysPermission>();
+		if(list==null){
+			return result;
+		}
+		for (SysPermission sysPermission:list) {
+			if (sysPermission.getParentId().equals(parentId)) {
+				result.add(sysPermission);
+			}
+		}
+		return result;
 	}
 
 }

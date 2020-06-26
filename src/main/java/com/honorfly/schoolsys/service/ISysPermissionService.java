@@ -1,5 +1,6 @@
 package com.honorfly.schoolsys.service;
 
+import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.utils.service.IBaseService;
@@ -32,5 +33,7 @@ public interface ISysPermissionService extends IBaseService {
 	public void editRoleBatch(String idString,int invalid) throws Exception ;
 
 	public SysUser loadUser(String userName) throws Exception ;
+
+	public List<SysPermission> getPermissionsByParentId(List<SysPermission> list, Long parentId);
 
 }

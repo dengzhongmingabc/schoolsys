@@ -12,5 +12,6 @@ public final class AppWhiteList {
 
 	static {
 		whiteList.add("/sys/user/info");
+		whiteList.add("/sys/user/nav");
 	}
 }

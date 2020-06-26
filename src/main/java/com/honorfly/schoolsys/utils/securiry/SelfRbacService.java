@@ -1,7 +1,5 @@
 package com.honorfly.schoolsys.utils.securiry;
 
-import com.honorfly.schoolsys.entry.SessionUser;
-import com.honorfly.schoolsys.entry.SysPermission;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ public class SelfRbacService {
         Object obj = authentication.getPrincipal();
         if (obj instanceof UserDetails) {
             //登录过了
-            boolean pass = false;
+  /*          boolean pass = false;
             String requestUrl = request.getRequestURI();
             //看是否在白名单里
             for (String url:AppWhiteList.whiteList){
@@ -41,7 +39,8 @@ public class SelfRbacService {
                 }
             }
             //做权限配对，配对上有权限，通过
-            return pass;
+            return pass;*/
+         return true;
         } else {
             //没有登录
 
