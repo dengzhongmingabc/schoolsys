@@ -35,6 +35,10 @@ public class Page
     private int totalCount;
 
     /*
+     * 记录总数
+     */
+    private int total;
+    /*
      * 记录对象集合
      */
     private List data;
@@ -62,6 +66,15 @@ public class Page
         this.pageSize = pageSize;
         this.totalCount = totalCount;
         this.data = data;
+        this.total = totalCount;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public int getPageSize()

@@ -1,0 +1,14 @@
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (7, 3);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (8, 2);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (8, 4);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (11, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (12, 14);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (13, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (14, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (15, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (16, 1);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (17, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (18, 14);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (19, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (20, 16);
+INSERT INTO schoolsys.sys_user_role (user_id, role_id) VALUES (22, 16);

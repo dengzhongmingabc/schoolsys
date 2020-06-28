@@ -1,6 +1,7 @@
 package com.honorfly.schoolsys.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.honorfly.schoolsys.entry.SessionUser;
 import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
@@ -30,10 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -46,6 +44,61 @@ public class SysPermissionAction extends BaseController {
 	@Autowired
 	private ISysUserService sysUserService;
 
+	/*@ApiOperation(value="用户导航")
+	@ResponseBody
+	@RequestMapping(value = "/nav",method = RequestMethod.POST)
+	public Result nav() throws Exception{
+		List navs = new ArrayList();
+		Map nav = new HashMap();
+		nav.put("name","dashboard");
+		nav.put("parentId",0);
+		nav.put("id",1);
+		nav.put("component","RouteView");
+		nav.put("redirect","/dashboard/workplace");
+		Map meta = new HashMap();
+		meta.put("title","仪表盘");
+		meta.put("icon","dashboard");
+		meta.put("show",true);
+		nav.put("meta",meta);
+		navs.add(nav);
+
+		nav = new HashMap();
+		nav.put("name","workplace");
+		nav.put("parentId",1);
+		nav.put("id",7);
+		nav.put("component","Workplace");
+		meta = new HashMap();
+		meta.put("title","工作台");
+		meta.put("show",true);
+		nav.put("meta",meta);
+		navs.add(nav);
+
+		nav = new HashMap();
+		nav.put("name","sysusermanager");
+		nav.put("parentId",0);
+		nav.put("id",20028);
+		nav.put("component","RouteView");
+		nav.put("redirect","/sysusermanager/perssion");
+		meta = new HashMap();
+		meta.put("title","用户管理");
+		meta.put("icon","user");
+		meta.put("show",true);
+		nav.put("meta",meta);
+		navs.add(nav);
+
+		nav = new HashMap();
+		nav.put("name","perssion");
+		nav.put("parentId",20028);
+		nav.put("id",20029);
+		nav.put("component","PersionManage");
+		meta = new HashMap();
+		meta.put("title","权限管理");
+		meta.put("show",true);
+		nav.put("meta",meta);
+		navs.add(nav);
+		return ResultGenerator.genSuccessResult(navs);
+	}
+*/
 	@ApiOperation(value="用户导航")
 	@ResponseBody
 	@RequestMapping(value = "/nav",method = RequestMethod.POST)
@@ -53,8 +106,16 @@ public class SysPermissionAction extends BaseController {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
 		SessionUser redisUser = (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace+sessionUser.getId());
+		List<SysPermission> permissions = redisUser.buttons;
+
+		Collections.sort(permissions, new Comparator<SysPermission>() {
+			@Override
+			public int compare(SysPermission o1, SysPermission o2) {
+				return o2.getId()>o1.getId()?-1:1; //降序
+			}
+		});
 		List navs = new ArrayList();
-		List<SysPermission> dics = sysPermissionService.getPermissionsByParentId(redisUser.buttons,0L);
+		List<SysPermission> dics = sysPermissionService.getPermissionsByParentId(permissions,0L);
 		for(SysPermission dd:dics){
 			Map navlevel1 = new HashMap();
 			navlevel1.put("name",dd.getName());
@@ -68,7 +129,7 @@ public class SysPermissionAction extends BaseController {
 			metanavlevel1.put("show",dd.getShow());
 			navlevel1.put("meta",metanavlevel1);
 			navs.add(navlevel1);
-			dics = sysPermissionService.getPermissionsByParentId(redisUser.buttons,dd.getId());
+			dics = sysPermissionService.getPermissionsByParentId(permissions,dd.getId());
 			for(SysPermission d:dics){
 				Map navlevel2 = new HashMap();
 				navlevel2.put("name",d.getName());
@@ -83,7 +144,7 @@ public class SysPermissionAction extends BaseController {
 				metanavlevel2.put("hideChildren",true);
 				navlevel2.put("meta",metanavlevel2);
 				boolean flag = false;
-				dics = sysPermissionService.getPermissionsByParentId(redisUser.buttons,d.getId());
+				dics = sysPermissionService.getPermissionsByParentId(permissions,d.getId());
 				for(SysPermission buttion:dics){
 					flag = true;
 					Map navlevel3 = new HashMap();
@@ -107,8 +168,10 @@ public class SysPermissionAction extends BaseController {
 				navs.add(navlevel2);
 			}
 		}
-	/*	com.alibaba.fastjson.JSONArray json = new JSONArray(navs);
-		System.out.println("xxxxxxx----"+json);*/
+
+
+		com.alibaba.fastjson.JSONArray json = new JSONArray(navs);
+		System.out.println("xxxxxxx----"+json);
 		return ResultGenerator.genSuccessResult(navs);
 	}
 

@@ -3,9 +3,7 @@ package com.honorfly.schoolsys.entry;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +28,7 @@ public class SysUser extends EntityObj {
 	@Column
 	private String position;
 
-	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch = FetchType.EAGER)
 	@JoinTable(
 			name="sys_user_role",
 			joinColumns=@JoinColumn(name="user_id"),

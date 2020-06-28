@@ -1,0 +1,11 @@
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (1, '2020-06-17 07:24:14', true, '2020-06-17 07:24:59', null, null, 1, '角色测试');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (18, '2020-06-27 14:34:07', null, '2020-06-27 14:34:07', null, null, 1, 'dsfdsafdasfdsaf');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (16, '2020-06-26 02:39:56', true, '2020-06-26 02:39:56', null, null, 1, '开发者');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (17, '2020-06-27 14:33:54', null, '2020-06-27 14:33:54', null, null, 1, 'fdsfdsfdsf');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (14, '2020-06-20 09:35:17', true, '2020-06-20 09:35:17', null, null, 1, '老师');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (8, '2020-06-18 13:27:18', true, '2020-06-18 13:27:18', null, null, 1, 'zzz');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (9, '2020-06-18 14:21:59', true, '2020-06-18 14:21:59', null, null, 1, 'xxx');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (10, '2020-06-18 14:22:03', true, '2020-06-18 14:22:03', null, null, 1, 'aaa');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (11, '2020-06-18 14:22:07', true, '2020-06-18 14:22:07', null, null, 1, 'eewe');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (12, '2020-06-19 02:38:22', false, '2020-06-19 02:38:22', null, null, 1, 'vvvv');
+INSERT INTO schoolsys.sys_role (id, created_date, invalid, last_modified_date, last_modifier, other, status, role_name) VALUES (13, '2020-06-19 03:17:46', true, '2020-06-19 03:17:46', null, null, 1, '子');

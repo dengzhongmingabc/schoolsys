@@ -17,7 +17,7 @@ public class SysRole  extends EntityObj {
 	@Column(name = "role_name")
 	private String roleName;
 
-	@ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch = FetchType.EAGER)
 	@JoinTable(
 			name="sys_role_permission",
 			joinColumns=@JoinColumn(name="role_id"),
