@@ -28,4 +28,5 @@ public final class AppConst {
 
 
 	public static final String Redis_Session_Namespace = "SessionNamespace:";
+	public static final String Redis_Captcha_Namespace = "CaptchaNamespace:";
 }

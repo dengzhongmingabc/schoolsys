@@ -35,5 +35,6 @@ public interface ISysPermissionService extends IBaseService {
 	public SysUser loadUser(String userName) throws Exception ;
 
 	public List<SysPermission> getPermissionsByParentId(List<SysPermission> list, Long parentId);
+	public SysUser loadUserByMobile(String mobile) throws Exception ;
 
 }

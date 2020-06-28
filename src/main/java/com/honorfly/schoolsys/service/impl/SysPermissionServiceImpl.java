@@ -163,6 +163,17 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 		}
 		return null;
 	}
+	public SysUser loadUserByMobile(String mobile) throws Exception {
+		StringBuffer sql = new StringBuffer("select * from sys_user sysuser where 1=1 ");
+		sql.append(" and sysuser.mobile=:mobile ");
+		Map args = new HashMap();
+		args.put("mobile", mobile);
+		List<SysUser> users =  this.loadBySQL(sql.toString(), args, SysUser.class);
+		if(null!=users&&users.size()>0){
+			return users.get(0);
+		}
+		return null;
+	}
 
 		@Override
 		public List queryParent() throws Exception {

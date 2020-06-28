@@ -782,4 +782,22 @@ public class SysPermissionAction extends BaseController {
 		result.put("roles",roles);
 		return ResultGenerator.genSuccessResult(result);
 	}
+
+
+	@ApiOperation(value="获取验证码")
+	@ResponseBody
+	@RequestMapping(value = "/getCaptcha",method = RequestMethod.POST)
+	public Result getCaptcha(String mobile) throws Exception {
+		if(StringUtils.isBlank(mobile)){
+			return ResultGenerator.genFailResult("手机号码不能为空");
+		}
+		String code = "";
+		while (StringUtils.isBlank(code)||code.contains("4")){
+			code = String.valueOf((int)((Math.random()*9+1)*1000));
+		}
+		if(StringUtils.isNotEmpty(mobile)){
+			redisUtil.set(AppConst.Redis_Captcha_Namespace+mobile,code);
+		}
+		return ResultGenerator.genSuccessResult(code);
+	}
 }
