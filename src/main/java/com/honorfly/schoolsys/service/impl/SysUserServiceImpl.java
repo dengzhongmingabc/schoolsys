@@ -26,8 +26,12 @@ public class SysUserServiceImpl extends BaseService implements ISysUserService {
 		return sysUserDao.userPageList(where, currentPage, pageSize);
     }
 
-	public List roleList(Map where) throws Exception {
-		return this.loadBySQL("select * from sys_role where invalid=:invalid",where,SysRole.class);
+	public List roleList() throws Exception {
+		StringBuffer sbsql = new StringBuffer(" select role.* from sys_role role where 1=1 ");
+		sbsql.append(" and invalid = true ");
+		sbsql.append(" and admin_id = " + baseDaoImpl.getAdminId() + " ");
+		sbsql.append(" order by id desc");
+		return baseDaoImpl.loadBySQL(sbsql.toString(),SysRole.class);
 	}
 
 	public Page userPayListByPage(Map<String,String> where,int currentPage,int pageSize) throws Exception {

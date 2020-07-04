@@ -19,13 +19,13 @@ private long id;
 	private String position;
 
 
-	private Set<SysRole> roles = new HashSet<SysRole>();
+	public List<School> schools = new ArrayList<School>();
 
 	private Long parentId;
 
 	private Long departmentId;
 
-	private Boolean proxyAdmin;
+	private Boolean admin;
 
 	private Double balance=0.0;
 
@@ -38,6 +38,26 @@ private long id;
 
 	private String username;
 	private String password;
+
+	private Long schoolId;
+
+	private Long adminId;
+
+	public Long getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Long adminId) {
+		this.adminId = adminId;
+	}
+
+	public Long getSchoolId() {
+		return schoolId;
+	}
+
+	public void setSchoolId(Long schoolId) {
+		this.schoolId = schoolId;
+	}
 
 	public long getId() {
 		return id;
@@ -123,14 +143,6 @@ private long id;
 		this.position = position;
 	}
 
-	public Set<SysRole> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(Set<SysRole> roles) {
-		this.roles = roles;
-	}
-
 	public Long getParentId() {
 		return parentId;
 	}
@@ -147,12 +159,12 @@ private long id;
 		this.departmentId = departmentId;
 	}
 
-	public Boolean getProxyAdmin() {
-		return proxyAdmin;
+	public Boolean getAdmin() {
+		return admin;
 	}
 
-	public void setProxyAdmin(Boolean proxyAdmin) {
-		this.proxyAdmin = proxyAdmin;
+	public void setAdmin(Boolean admin) {
+		this.admin = admin;
 	}
 
 	public Double getBalance() {

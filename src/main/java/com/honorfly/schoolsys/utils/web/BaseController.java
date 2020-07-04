@@ -1,7 +1,10 @@
 package com.honorfly.schoolsys.utils.web;
 
+import com.honorfly.schoolsys.entry.SessionUser;
 import com.honorfly.schoolsys.utils.AppConfig;
+import com.honorfly.schoolsys.utils.AppConst;
 import com.honorfly.schoolsys.utils.redis.RedisUtil;
+import com.honorfly.schoolsys.utils.service.BaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +32,15 @@ public class BaseController{
 
 	private static final String entityPackage="com.ydy258.ydy.entity";
 
-	protected static final String session_key="session_key";
-
 	protected static final int pageSize = 20;
 
 	@Autowired
 	protected RedisUtil redisUtil;
 	@Autowired
 	protected AppConfig appConfig;
+
+	@Autowired
+	protected BaseService baseService;
 
 	/** servletContext */
 
@@ -46,8 +50,20 @@ public class BaseController{
 	@Autowired
 	protected HttpServletRequest request;
 
-	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+	public SessionUser getRedisSession(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
+		return (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace + sessionUser.getId());
+	}
+
+	public Long getSchoolId(){
+		return this.getRedisSession().getSchoolId();
+	}
+
+	public Long getAdminId(){
+		return this.getRedisSession().getAdminId();
+	}
 
 	public BaseController() {
 		dto = new HashMap<String, Object>();

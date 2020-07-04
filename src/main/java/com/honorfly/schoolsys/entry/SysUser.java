@@ -43,7 +43,7 @@ public class SysUser extends EntityObj {
 	private Long departmentId;
 
 	@Column
-	private Boolean proxyAdmin;
+	private Boolean admin = false;
 
 	@Column
 	private Double balance=0.0;
@@ -130,12 +130,12 @@ public class SysUser extends EntityObj {
 		this.departmentId = departmentId;
 	}
 
-	public Boolean getProxyAdmin() {
-		return proxyAdmin;
+	public Boolean getAdmin() {
+		return admin;
 	}
 
-	public void setProxyAdmin(Boolean proxyAdmin) {
-		this.proxyAdmin = proxyAdmin;
+	public void setAdmin(Boolean admin) {
+		this.admin = admin;
 	}
 
 	public Double getBalance() {

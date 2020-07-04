@@ -18,6 +18,8 @@ import java.util.Map;
 public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 
 
+
+
 	public Page roleListByPage(Map<String,String> search, int currentPage, int pageSize) throws Exception {
 		StringBuffer sbsql = new StringBuffer(" select role.* from sys_role role where 1=1 ");
 		Map args = new HashMap();
@@ -25,10 +27,12 @@ public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 			sbsql.append(" and  role.role_name like :content");
 			args.put("content", "%"+search.get("name")+"%");
 		}
-		if(!StringUtils.isBlank(search.get("invalid"))){
+/*		if(!StringUtils.isBlank(search.get("invalid"))){
 			sbsql.append(" and  role.invalid = :invalid");
 			args.put("invalid", Boolean.valueOf(search.get("invalid")));
-		}
+		}*/
+		sbsql.append(" and invalid = true ");
+		sbsql.append(" and admin_id = " + getAdminId() + " ");
 		sbsql.append(" order by role.created_date desc");
 		return PageFactory.createPageBySql(this, sbsql.toString(), args, SysRole.class, currentPage, pageSize);
     }
@@ -62,11 +66,11 @@ public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 			sbsql.append(" and  (sysuser.real_name like :realName) ");
 			args.put("realName", "%"+where.get("realName")+"%");
 		}
-		if(!StringUtils.isBlank(where.get("invalid"))){
-			sbsql.append(" and  sysuser.invalid = :invalid");
-			args.put("invalid", Boolean.valueOf(where.get("invalid")));
-		}
+		sbsql.append(" and invalid = true ");
+		//sbsql.append(" and school_id = "+getSchoolId()+" ");
+		sbsql.append(" and admin_id = " + getAdminId() + " ");
 		sbsql.append(" order by id desc");
+
 		return PageFactory.createPageBySql(this, sbsql.toString(), args, SysUser.class, currentPage, pageSize);
     }
 

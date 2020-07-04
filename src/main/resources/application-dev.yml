@@ -76,4 +76,4 @@ app:
     expire: 604800
     secret: aHR0cHM6Ly9teS5vc2NoaW5hLm5ldC91LzM2ODE4Njg=
   sysconfig:
-    sessionExpire: 300
+    sessionExpire: 86400

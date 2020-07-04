@@ -2,13 +2,11 @@ package com.honorfly.schoolsys.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.honorfly.schoolsys.entry.SessionUser;
-import com.honorfly.schoolsys.entry.SysPermission;
-import com.honorfly.schoolsys.entry.SysRole;
-import com.honorfly.schoolsys.entry.SysUser;
+import com.honorfly.schoolsys.entry.*;
 import com.honorfly.schoolsys.form.IDForm;
 import com.honorfly.schoolsys.form.SysPermissionForm;
 import com.honorfly.schoolsys.form.SysRoleForm;
+import com.honorfly.schoolsys.service.ISchoolManagerService;
 import com.honorfly.schoolsys.service.ISysPermissionService;
 import com.honorfly.schoolsys.service.ISysUserService;
 import com.honorfly.schoolsys.utils.AppConst;
@@ -44,61 +42,7 @@ public class SysPermissionAction extends BaseController {
 	@Autowired
 	private ISysUserService sysUserService;
 
-	/*@ApiOperation(value="用户导航")
-	@ResponseBody
-	@RequestMapping(value = "/nav",method = RequestMethod.POST)
-	public Result nav() throws Exception{
-		List navs = new ArrayList();
-		Map nav = new HashMap();
-		nav.put("name","dashboard");
-		nav.put("parentId",0);
-		nav.put("id",1);
-		nav.put("component","RouteView");
-		nav.put("redirect","/dashboard/workplace");
-		Map meta = new HashMap();
-		meta.put("title","仪表盘");
-		meta.put("icon","dashboard");
-		meta.put("show",true);
-		nav.put("meta",meta);
-		navs.add(nav);
 
-		nav = new HashMap();
-		nav.put("name","workplace");
-		nav.put("parentId",1);
-		nav.put("id",7);
-		nav.put("component","Workplace");
-		meta = new HashMap();
-		meta.put("title","工作台");
-		meta.put("show",true);
-		nav.put("meta",meta);
-		navs.add(nav);
-
-		nav = new HashMap();
-		nav.put("name","sysusermanager");
-		nav.put("parentId",0);
-		nav.put("id",20028);
-		nav.put("component","RouteView");
-		nav.put("redirect","/sysusermanager/perssion");
-		meta = new HashMap();
-		meta.put("title","用户管理");
-		meta.put("icon","user");
-		meta.put("show",true);
-		nav.put("meta",meta);
-		navs.add(nav);
-
-		nav = new HashMap();
-		nav.put("name","perssion");
-		nav.put("parentId",20028);
-		nav.put("id",20029);
-		nav.put("component","PersionManage");
-		meta = new HashMap();
-		meta.put("title","权限管理");
-		meta.put("show",true);
-		nav.put("meta",meta);
-		navs.add(nav);
-		return ResultGenerator.genSuccessResult(navs);
-	}
-*/
 	@ApiOperation(value="用户导航")
 	@ResponseBody
 	@RequestMapping(value = "/nav",method = RequestMethod.POST)
@@ -179,7 +123,7 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/info",method = RequestMethod.POST)
 	public Result info() throws Exception{
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		SessionUser sessionUser = this.getRedisSession();
 		Map role = new HashMap();
 		role.put("id","admin");
 		role.put("name","管理员");
@@ -215,13 +159,14 @@ public class SysPermissionAction extends BaseController {
 		role.put("permissions",permissions);
 
 		Map userInfo = new HashMap();
-		userInfo.put("name","邓忠明");
+		userInfo.put("name",sessionUser.getRealName());
 		userInfo.put("token","4291d7da9005377ec9aec4a71ea837f");
 		userInfo.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
 		userInfo.put("status","1");
-		userInfo.put("username","admin");
+		userInfo.put("username",sessionUser.getUsername());
 		userInfo.put("roleId","admin");
 		userInfo.put("role",role);
+
 		return ResultGenerator.genSuccessResult(userInfo);
 	}
 
@@ -467,7 +412,8 @@ public class SysPermissionAction extends BaseController {
 
 
 
-
+	@Autowired
+	ISchoolManagerService schoolManagerService;
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/saveRole",method = RequestMethod.POST)
@@ -479,11 +425,28 @@ public class SysPermissionAction extends BaseController {
 		SysRole sysRole = null;
 		if(sysRoleForm.getId()<1){
 			sysRole = new SysRole();
+			sysRoleForm.setId(null);
 		}else{
 			sysRole = sysPermissionService.getById(SysRole.class,sysRoleForm.getId());
 		}
 		BeanUtils.copyProperties(sysRoleForm,sysRole);
-		sysPermissionService.update(sysRole);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
+		SessionUser redisSession = (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace+sessionUser.getId());
+		sysRole.setAdminId(redisSession.getAdminId());
+		if (sysRoleForm.getSelectType()==2){//选择是部分
+			List<School> schools = new ArrayList<School>();
+			if(!StringUtils.isBlank(sysRoleForm.getSchoolIdStr())){
+				schools = schoolManagerService.schoolList(redisSession.getAdminId(),sysRoleForm.getSchoolIdStr());
+			}
+			sysRole.getSchools().clear();
+			sysRole.getSchools().addAll(schools);
+		}else {//选择的是全部
+			List<School> schools = schoolManagerService.schoolList(redisSession.getAdminId());
+			sysRole.getSchools().clear();
+			sysRole.getSchools().addAll(schools);
+		}
+		sysPermissionService.save(sysRole);
 		return ResultGenerator.genSuccessResult();
     }
 
@@ -509,7 +472,26 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(ret);
 	}
 
+	@ApiOperation(value="角色id查询")
+	@ResponseBody
+	@RequestMapping(value = "/queryRoleDetail",method = RequestMethod.POST)
+	public Result queryRoleDetail(@Valid IDForm idForm, BindingResult bindingResult) throws Exception {
+		if(bindingResult.hasErrors()){
+			return ResultGenerator.genFailResult(bindingResult.getFieldError().getDefaultMessage());
+		}
+		SysRole sysRole= sysPermissionService.getById(SysRole.class, Long.valueOf(idForm.getId()));
+		Map result = new HashMap();
+		result.put("id",sysRole.getId());
+		result.put("selectType",sysRole.getSelectType());
+		List roles = new ArrayList();
+		for(School school:sysRole.getSchools()){
+			roles.add(school.getId());
+		}
+		result.put("schools",roles);
+		return ResultGenerator.genSuccessResult(result);
 
+
+	}
 
 
 
@@ -619,9 +601,7 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/roleList",method = RequestMethod.POST)
 	public Result roleList() throws Exception{
-		Map search = new HashMap<String,String>();
-		search.put("invalid",true);
-		List roles = sysUserService.roleList(search);
+		List roles = sysUserService.roleList();
 		List<Map> list = new ArrayList<Map>();
 		for(Object sm:roles){
 			Map mo = new HashMap();
@@ -692,7 +672,8 @@ public class SysPermissionAction extends BaseController {
 		}else{
 			dd.getRoles().clear();
 		}
-		sysUserService.update(dd);
+		dd.setAdminId(getAdminId());
+		sysUserService.save(dd);
 		return ResultGenerator.genSuccessResult();
 	}
 
@@ -756,7 +737,7 @@ public class SysPermissionAction extends BaseController {
 		}else{
 			dd.getRoles().clear();
 		}
-		sysUserService.update(dd);
+		sysUserService.save(dd);
 		return ResultGenerator.genSuccessResult();
 	}
 

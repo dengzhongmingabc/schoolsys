@@ -19,6 +19,28 @@ public class SysRoleForm  {
 	@ApiModelProperty(value="状态")
 	private Boolean invalid;
 
+	@ApiModelProperty(value="选择类型")
+	private int selectType;
+
+	@ApiModelProperty(value="学校ID集")
+	private String schoolIdStr;
+
+	public int getSelectType() {
+		return selectType;
+	}
+
+	public void setSelectType(int selectType) {
+		this.selectType = selectType;
+	}
+
+	public String getSchoolIdStr() {
+		return schoolIdStr;
+	}
+
+	public void setSchoolIdStr(String schoolIdStr) {
+		this.schoolIdStr = schoolIdStr;
+	}
+
 	public Boolean getInvalid() {
 		return invalid;
 	}

@@ -40,7 +40,6 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-
         SessionUser sessionUser = (SessionUser) authentication.getPrincipal();
         SysUser user = null;
         if (sessionUser.getId() > 1) {//密码账号认证
@@ -64,11 +63,15 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
                 user.setUserName(sessionUser.getUsername());
                 user.setRealName("试用老师：" + sessionUser.getUsername());
                 user.setPassword(new BCryptPasswordEncoder().encode(RandomStringUtils.randomAlphanumeric(10)));//随机随机生成密码
+                user.setAdmin(true);
                 SysRole sysRole = sysPermissionService.getById(SysRole.class, 14L);//给一个默认的角色 14：老师
                 user.getRoles().add(sysRole);
                 sysPermissionService.update(user);
                 try {
                     user = sysPermissionService.loadUserByMobile(sessionUser.getUsername());
+                    user.setAdminId(user.getId());
+                    sysPermissionService.update(user);
+                    user = sysPermissionService.getById(SysUser.class,user.getId());
                 } catch (Exception e) {
                     throw new UsernameNotFoundException("没有对应的用户");
                 }
@@ -80,7 +83,12 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
         redisUser.setId(user.getId());
         redisUser.setRealName(user.getRealName());
         redisUser.setParentId(user.getParentId());
+        redisUser.setAdminId(user.getAdminId());
+        redisUser.setAdmin(user.getAdmin());
         for (SysRole role : user.getRoles()) {
+            if (role.getSchools() != null && role.getSchools().size() > 0) {
+                redisUser.schools.addAll(role.getSchools());
+            }
             if (role.getPermissions() != null && role.getPermissions().size() > 0) {
                 redisUser.buttons.addAll(role.getPermissions());
             }

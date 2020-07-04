@@ -1,9 +1,16 @@
 package com.honorfly.schoolsys.utils.dao;
 
+import com.honorfly.schoolsys.entry.SessionUser;
+import com.honorfly.schoolsys.utils.AppConfig;
+import com.honorfly.schoolsys.utils.AppConst;
+import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,14 +24,35 @@ import java.util.Map;
 @Repository(value="baseDaoImpl")
 public class BaseDaoImpl implements IBaseDao {
 	protected static final Log log = LogFactory.getLog(BaseDaoImpl.class);
+
+	@Autowired
+	protected RedisUtil redisUtil;
+	@Autowired
+	protected AppConfig appConfig;
+
 	//注入实体管理器
 	@PersistenceContext
 	protected EntityManager entityManager;
-	
+
 	private Class<EntityObj> clazz;
 
 	public BaseDaoImpl() {
 	}
+
+	public SessionUser getRedisSession(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
+		return (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace + sessionUser.getId());
+	}
+
+	public Long getSchoolId(){
+		return this.getRedisSession().getSchoolId();
+	}
+
+	public Long getAdminId(){
+		return this.getRedisSession().getAdminId();
+	}
+
 	public BaseDaoImpl(Class<EntityObj> clazz) {
 		this.clazz = clazz;
 	}
@@ -32,13 +60,13 @@ public class BaseDaoImpl implements IBaseDao {
 	@Override
 	public void setClass(Class clazz) {
 		this.clazz = clazz;
-		
+
 	}
-	
+
 	public Class<EntityObj> getEntityClass()throws Exception {
 		return this.clazz;
 	}
-	
+
 	@Override
 	public void save(Object EntityObj) {
 		// TODO Auto-generated method stub
@@ -50,7 +78,7 @@ public class BaseDaoImpl implements IBaseDao {
 		// TODO Auto-generated method stub
 		return entityManager.find(this.clazz, id);
 	}
-	
+
 
 	@Override
 	@Transactional()
@@ -58,23 +86,23 @@ public class BaseDaoImpl implements IBaseDao {
 		// TODO Auto-generated method stub
 		return entityManager.find(clazz, id);
 	}
-	
+
 	@Override
 	public void update(Object entity) {
 		// TODO Auto-generated method stub
 		entityManager.merge(entity);
 		//entityManager.flush();
 	}
-	
+
 	/**
-	 * 
-	 * @Title:        save 
+	 *
+	 * @Title:        save
 	 * @Description:  TODO 保存
 	 * @param:        @param entity
 	 * @param:        @return
-	 * @param:        @throws Exception    
-	 * @return:       Long    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       Long
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:57:34
 	 */
@@ -88,13 +116,13 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	/**
-	 * 
-	 * @Title:        save 
+	 *
+	 * @Title:        save
 	 * @Description:  TODO 保存集合
 	 * @param:        @param list
-	 * @param:        @throws Exception    
-	 * @return:       void    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       void
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:58:01
 	 */
@@ -106,14 +134,14 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	/**
-	 * 
+	 *
 	 * @Title:        delete 通过ID删除
 	 * @Description:  TODO
 	 * @param:        @param clazz
 	 * @param:        @param id
-	 * @param:        @throws Exception    
-	 * @return:       void    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       void
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:58:24
 	 */
@@ -124,13 +152,13 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	/**
-	 * 
+	 *
 	 * @Title:        delete 删除指定实体
 	 * @Description:  TODO
 	 * @param:        @param entity
-	 * @param:        @throws Exception    
-	 * @return:       void    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       void
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:59:04
 	 */
@@ -142,16 +170,16 @@ public class BaseDaoImpl implements IBaseDao {
 			return;
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @Title:        delete 通过ID删除
 	 * @Description:  TODO
 	 * @param:        @param clazz
 	 * @param:        @param id
-	 * @param:        @throws Exception    
-	 * @return:       void    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       void
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:58:24
 	 */
@@ -161,15 +189,15 @@ public class BaseDaoImpl implements IBaseDao {
 			entityManager.remove(entity);
 	}
 	/**
-	 * 
+	 *
 	 * @Title:        queryNum 查询数字
 	 * @Description:  TODO
 	 * @param:        @param jpql
 	 * @param:        @param args
 	 * @param:        @return
-	 * @param:        @throws Exception    
-	 * @return:       Object    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       Object
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午2:59:43
 	 */
@@ -186,17 +214,17 @@ public class BaseDaoImpl implements IBaseDao {
 		}
 		return query.getSingleResult();
 	}
-	
+
 	/**
-	 * 
-	 * @Title:        getSQLTotalCnt 
+	 *
+	 * @Title:        getSQLTotalCnt
 	 * @Description:  TODO 查询总数
 	 * @param:        @param sql
 	 * @param:        @param args
 	 * @param:        @return
-	 * @param:        @throws Exception    
-	 * @return:       int    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       int
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午3:00:46
 	 */
@@ -213,29 +241,29 @@ public class BaseDaoImpl implements IBaseDao {
 		}
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
-	
+
 	public int getSQLTotalCnt(final String sql)throws Exception {
 		return getSQLTotalCnt(sql, null);
 	}
-	
+
 	/**
 	 * jpql分布查询
 	 */
 	public int getJPQLTotalCnt(final String jpql,final Map<String,String> args)throws Exception {
 		return Integer.parseInt(queryNum(jpql, args).toString());
 	}
-	
+
 
 	/**
-	 * 
-	 * @Title:        loadByJPQL 
+	 *
+	 * @Title:        loadByJPQL
 	 * @Description:  TODO
-	 * @param:        @param jpql 
+	 * @param:        @param jpql
 	 * @param:        @param args
 	 * @param:        @return
-	 * @param:        @throws Exception    
-	 * @return:       List    
-	 * @throws 
+	 * @param:        @throws Exception
+	 * @return:       List
+	 * @throws
 	 * @author        Administrator
 	 * @Date          2015年8月4日 下午3:02:47
 	 */
@@ -273,7 +301,7 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public Object execute(final String jpql, final Map<String,String> args)throws Exception {
 		if (log.isDebugEnabled()) {
@@ -287,7 +315,7 @@ public class BaseDaoImpl implements IBaseDao {
 			}
 		}
 		return Integer.valueOf(query.executeUpdate());
-		
+
 	}
 
 	/**
@@ -326,6 +354,31 @@ public class BaseDaoImpl implements IBaseDao {
 		return query.getResultList();
 	}
 
+
+	/**
+	 * 原生sql查询
+	 */
+	public List loadBySQL(final String sql,Class clazz)throws Exception {
+		if (log.isDebugEnabled()) {
+			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
+		}
+		javax.persistence.Query query = entityManager.createNativeQuery(sql,clazz).setFlushMode(FlushModeType.COMMIT);
+		return query.getResultList();
+	}
+
+	/**
+	 * 原生sql分页查询
+	 */
+	public List<EntityObj> loadBySQL(final String sql,Class clazz, final int start, final int size)throws Exception{
+		if (log.isDebugEnabled()) {
+			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
+		}
+		javax.persistence.Query query = entityManager.createNativeQuery(sql,clazz).setFlushMode(FlushModeType.COMMIT);
+		query.setMaxResults(size);
+		query.setFirstResult(start);
+		return query.getResultList();
+	}
+
 	/**
 	 * 原生sql执行
 	 */
@@ -334,7 +387,7 @@ public class BaseDaoImpl implements IBaseDao {
 			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
 		}
 		javax.persistence.Query query = entityManager.createNativeQuery(sql,Long.class).setFlushMode(FlushModeType.COMMIT);
-		
+
 		if (args != null) {
 			String s;
 			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext(); query.setParameter(s, args.get(s))) {
@@ -343,7 +396,7 @@ public class BaseDaoImpl implements IBaseDao {
 		}
 		return Integer.valueOf(query.executeUpdate());
 	}
-	
+
 	/**
 	 * 原生sql 一般关联，比较复杂的查询的时候要用到的 返回的map的List
 	 */
@@ -356,7 +409,7 @@ public class BaseDaoImpl implements IBaseDao {
 		nativeQuery.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 		return nativeQuery.list();
 	}
-	
+
 	/**
 	 * 原生sql 一般关联，比较复杂的查询的时候要用到的 返回的map的List
 	 */
@@ -375,7 +428,7 @@ public class BaseDaoImpl implements IBaseDao {
 		}
 		return nativeQuery.list();
 	}
-	
+
 	/**
 	 *  原生sql分页查询 一般关联，比较复杂的查询的时候要用到的 返回的map  的List
 	 */
@@ -398,5 +451,5 @@ public class BaseDaoImpl implements IBaseDao {
 	}
 
 
-	
+
 }

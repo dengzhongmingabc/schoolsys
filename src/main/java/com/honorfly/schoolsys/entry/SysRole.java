@@ -26,10 +26,32 @@ public class SysRole  extends EntityObj {
 	private Set<SysPermission> permissions = new HashSet<SysPermission>();
 
 
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch = FetchType.EAGER)
+	@JoinTable(
+			name="role_School",
+			joinColumns=@JoinColumn(name="role_id"),
+			inverseJoinColumns=@JoinColumn(name="school_id")
+	)
+	private Set<School> schools = new HashSet<>();
 	// Constructors
+	@Column
+	private int selectType;
 
+	public int getSelectType() {
+		return selectType;
+	}
 
+	public void setSelectType(int selectType) {
+		this.selectType = selectType;
+	}
 
+	public Set<School> getSchools() {
+		return schools;
+	}
+
+	public void setSchools(Set<School> schools) {
+		this.schools = schools;
+	}
 
 	public Set<SysPermission> getPermissions() {
 		return permissions;

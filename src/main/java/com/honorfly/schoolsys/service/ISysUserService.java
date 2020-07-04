@@ -40,5 +40,5 @@ public interface ISysUserService extends IBaseService {
 
 	public List listProxy2(Map<String, String> where) throws Exception ;
 
-	public List roleList(Map where) throws Exception;
+	public List roleList() throws Exception;
 }

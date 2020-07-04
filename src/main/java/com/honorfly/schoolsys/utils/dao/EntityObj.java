@@ -13,19 +13,21 @@ import java.util.Locale;
 
 
 /**
- *   实体对象的基类，�?有实体类�?继承该类
+ * 实体对象的基类，�?有实体类�?继承该类
  */
 @MappedSuperclass
 public class EntityObj implements Serializable, IElement {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1863560649962507646L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1863560649962507646L;
 
-	// 把日志记录到log4j中输�?
-	private static final Log logger = LogFactory.getLog(EntityObj.class);
+    // 把日志记录到log4j中输�?
+    private static final Log logger = LogFactory.getLog(EntityObj.class);
 
-	public static  enum Status{start,end,ineffective,effective};
+    public static enum Status {start, end, ineffective, effective}
+
+    ;
     /*实体ID*/
     @Id
     @Column(name = "id")
@@ -43,14 +45,29 @@ public class EntityObj implements Serializable, IElement {
     public Date lastModifiedDate;
     /*是否有效*/
     @Column(name = "invalid")
-    public Boolean invalid=true;
+    public Boolean invalid = true;
     /*状态*/
     @Column(name = "status")
-    public int status=1;
+    public int status = 1;
 
     /*扩充字段，json*/
     @Column(name = "other")
     public String other;
+
+
+    @Column
+    public Long adminId;
+
+    @Column
+    private Long schoolId;
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
+    }
 
     public String getOther() {
         return other;
@@ -69,12 +86,12 @@ public class EntityObj implements Serializable, IElement {
     }
 
 
-
-	/**
+    /**
      * 无参构�?�函数，构�?�一个无效的实体
      */
     public EntityObj() {
         status = 1;
+        id = null;
         createdDate = new Date();
         lastModifiedDate = new Date();
         invalid = Boolean.valueOf(true);
@@ -83,6 +100,7 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 剪切字符�?
+     *
      * @param s - 源字符串
      * @param i - 长度
      * @return 剪切后的字符�?
@@ -94,6 +112,7 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 字符�? --> 日期 类型转换，字符串的格式必须是4位年�?2位月�?2位日，时间可�?
+     *
      * @param s
      * @return
      * @throws ParseException
@@ -101,7 +120,7 @@ public class EntityObj implements Serializable, IElement {
     public static Date makeDateFromString(String s) throws ParseException {
         SimpleDateFormat simpledateformat = null;
         String s1 = s.substring(4, 5);
-        if(s.length() == 10)
+        if (s.length() == 10)
             simpledateformat = new SimpleDateFormat((new StringBuilder("yyyy")).append(s1).append("MM").append(s1).append("dd").toString(), Locale.US);
         else
             simpledateformat = new SimpleDateFormat((new StringBuilder("yyyy")).append(s1).append("MM").append(s1).append("dd").append(" HH:mm:ss").toString(), Locale.US);
@@ -118,12 +137,12 @@ public class EntityObj implements Serializable, IElement {
      * 判断是否同一实例
      */
     @Override
-	public boolean equals(Object obj) {
-        if(this == obj)
+    public boolean equals(Object obj) {
+        if (this == obj)
             return true;
-        if(obj == null || getClass() != obj.getClass())
+        if (obj == null || getClass() != obj.getClass())
             return false;
-        EntityObj entity = (EntityObj)obj;
+        EntityObj entity = (EntityObj) obj;
         return id == null ? entity.id == null : id.equals(entity.id);
     }
 
@@ -132,7 +151,7 @@ public class EntityObj implements Serializable, IElement {
      * @return 如果id属�?�为null，则返回super.hashCode()，否则返回id的hashCode
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return id == null ? super.hashCode() : id.hashCode();
     }
 
@@ -146,8 +165,7 @@ public class EntityObj implements Serializable, IElement {
         int i = 0;
         Field afield1[] = afield;
         int j = 0;
-        for(int k = afield1.length; j < k; j++)
-        {
+        for (int k = afield1.length; j < k; j++) {
             Field field = afield1[j];
             as[i++] = field.getName();
         }
@@ -158,6 +176,7 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 获得指定属�?�名的�??
+     *
      * @param s - 属�?�名�?
      * @return 返回指定属�?�名的�??
      */
@@ -167,8 +186,7 @@ public class EntityObj implements Serializable, IElement {
         try {
             Field field = getClass().getField(s);
             obj = field.get(this);
-        }
-        catch(Exception _ex) {
+        } catch (Exception _ex) {
             logger.warn((new StringBuilder(String.valueOf(getClass().getName()))).append(" haven't ").append(s).toString());
         }
         return obj;
@@ -177,46 +195,37 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 设置指定属�?�名的�??
-     * @param s - 属�?�名�?
+     *
+     * @param s   - 属�?�名�?
      * @param obj - �?
      */
     public void setPropertyValue(String s, Object obj) {
         try {
             Field field = getClass().getField(s);
             String s1 = field.getType().getSimpleName();
-            if(s1.equals(obj.getClass().getSimpleName()))
+            if (s1.equals(obj.getClass().getSimpleName()))
                 field.set(this, obj);
-            else
-            	if(obj.getClass().equals(String.class))
-            		field.set(this, String.valueOf(obj));
-            	else
-                if(s1.equals("Integer") || s1.equals("int"))
-                    field.set(this, Integer.valueOf(obj.toString()).intValue());
-                else
-                if(s1.equals("Float") || s1.equals("float"))
-                    field.set(this, Float.valueOf(obj.toString()).floatValue());
-                else
-                if(s1.equals("Double") || s1.equals("double"))
-                    field.set(this, Double.valueOf(Double.valueOf((String)obj).doubleValue()));
-                else
-                if(s1.equals("Boolean") || s1.equals("boolean"))
-                    field.set(this, Boolean.valueOf(obj.toString()).booleanValue());
-                else
-                if("Timestamp".equals(s1) || "Date".equals(s1))
-                {
-                    SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
-                    String s2 = (String)obj;
-                    if(s2.indexOf("/") >= 0)
-                    {
-                        field.set(this, simpledateformat.parse(s2));
-                    } else
-                    {
-                        SimpleDateFormat simpledateformat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
-                        field.set(this, simpledateformat1.parse(s2.replaceFirst("CST", "")));
-                    }
+            else if (obj.getClass().equals(String.class))
+                field.set(this, String.valueOf(obj));
+            else if (s1.equals("Integer") || s1.equals("int"))
+                field.set(this, Integer.valueOf(obj.toString()).intValue());
+            else if (s1.equals("Float") || s1.equals("float"))
+                field.set(this, Float.valueOf(obj.toString()).floatValue());
+            else if (s1.equals("Double") || s1.equals("double"))
+                field.set(this, Double.valueOf(Double.valueOf((String) obj).doubleValue()));
+            else if (s1.equals("Boolean") || s1.equals("boolean"))
+                field.set(this, Boolean.valueOf(obj.toString()).booleanValue());
+            else if ("Timestamp".equals(s1) || "Date".equals(s1)) {
+                SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
+                String s2 = (String) obj;
+                if (s2.indexOf("/") >= 0) {
+                    field.set(this, simpledateformat.parse(s2));
+                } else {
+                    SimpleDateFormat simpledateformat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
+                    field.set(this, simpledateformat1.parse(s2.replaceFirst("CST", "")));
                 }
-        }
-        catch(Exception _ex) {
+            }
+        } catch (Exception _ex) {
             logger.warn((new StringBuilder(String.valueOf(getClass().getName()))).append(" setPropertyValue error ").append(" for ").append(s).toString());
         }
     }
@@ -231,11 +240,11 @@ public class EntityObj implements Serializable, IElement {
         StringBuilder stringbuilder = new StringBuilder();
         Object obj = getPropertyValue(s);
         String s1 = "";
-        if(obj == null)
+        if (obj == null)
             return s1;
         stringbuilder.append((new StringBuilder("<")).append(s).append(">").toString());
         String s2 = obj.getClass().getName();
-        if("java.sql.Timestamp".equals(s2) || "java.util.Date".equals(s2))
+        if ("java.sql.Timestamp".equals(s2) || "java.util.Date".equals(s2))
             s1 = (new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US)).format(obj);
         else
             s1 = obj.toString();
@@ -247,6 +256,7 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 实体转换成xml
+     *
      * @return xml格式的字符串
      */
     public String toXML() {
@@ -256,11 +266,10 @@ public class EntityObj implements Serializable, IElement {
         stringbuilder.append(makeNewLine(">"));
         String as[] = properties();
         int i = 0;
-        for(int j = as.length; i < j; i++)
-        {
+        for (int j = as.length; i < j; i++) {
             String s = as[i];
             String s1 = makePropertyXML(s);
-            if(s1 != "")
+            if (s1 != "")
                 stringbuilder.append(s1);
         }
 
@@ -276,12 +285,10 @@ public class EntityObj implements Serializable, IElement {
         String s3 = (new StringBuilder("</")).append(s1).append(">").toString();
         int i = s.indexOf(s2);
         int j = s.indexOf(s3);
-        if(i + s2.length() <= j)
-        {
+        if (i + s2.length() <= j) {
             String s4 = s.substring(i + s2.length(), j);
             setPropertyValue(s1, s4);
-        } else
-        {
+        } else {
             logger.warn((new StringBuilder("did't found :")).append(s1).append("--").append(s).toString());
         }
     }
@@ -289,13 +296,13 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 根据xml初始化实体属�?
+     *
      * @param s - xml格式的字符串
      */
     public void initFromXML(String s) {
         String as[] = properties();
         int i = 0;
-        for(int j = as.length; i < j; i++)
-        {
+        for (int j = as.length; i < j; i++) {
             String s1 = as[i];
             setValue(s, s1);
         }
@@ -305,14 +312,14 @@ public class EntityObj implements Serializable, IElement {
 
     /**
      * 根据另外�?个实体初始化本实体的属�??
+     *
      * @param entity
      */
     public void initFromEntity(EntityObj entity) {
         String as[] = properties();
         String as1[] = as;
         int i = 0;
-        for(int j = as1.length; i < j; i++)
-        {
+        for (int j = as1.length; i < j; i++) {
             String s = as1[i];
             Object obj = entity.getPropertyValue(s);
             setPropertyValue(s, obj);
@@ -354,12 +361,12 @@ public class EntityObj implements Serializable, IElement {
         lastModifier = s;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

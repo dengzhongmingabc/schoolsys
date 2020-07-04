@@ -1,12 +1,14 @@
 package com.honorfly.schoolsys.utils.dao;
 
+import com.honorfly.schoolsys.entry.SessionUser;
+
 import java.util.List;
 import java.util.Map;
 
 public interface IBaseDao {
-	
+
 	void setClass(Class clazz);
-	
+
 	public Class getEntityClass()throws Exception ;
 	/**
      * 持久化实体
@@ -14,7 +16,14 @@ public interface IBaseDao {
      */
     void save(Object entity);
     void update(Object entity);
-    
+
+
+	SessionUser getRedisSession();
+
+	Long getSchoolId();
+
+	Long getAdminId();
+
     /**
      * 根据主键查询实体
      * @param <T>
@@ -23,7 +32,7 @@ public interface IBaseDao {
      * @return
      */
     EntityObj getById(Object id);
-    
+
     <T> T getById(Class<T> clazz, Object id);
 
 
@@ -199,6 +208,42 @@ public interface IBaseDao {
 	 */
 
 	public List<EntityObj> loadBySQL(final String sql, final Map<String, String> args, Class clazz, final int start, final int size)throws Exception;
+
+
+	/**
+	 *
+	 * @Title:        loadBySQL
+	 * @Description:  TODO 原生sql查询
+	 * @param:        @param sql
+	 * @param:        @param args 参数
+	 * @param:        @param clazz 要查询的对象
+	 * @param:        @return
+	 * @param:        @throws Exception
+	 * @return:       List
+	 * @throws
+	 * @author        Administrator
+	 * @Date          2015年8月7日 下午4:50:54
+	 */
+	public List loadBySQL(final String sql,Class clazz)throws Exception;
+
+	/**
+	 *
+	 * @Title:        loadBySQL
+	 * @Description:  TODO 原生sql分页查询
+	 * @param:        @param sql
+	 * @param:        @param args 参数
+	 * @param:        @param clazz 要查询
+	 * @param:        @param start 开始位置
+	 * @param:        @param size 页面大小
+	 * @param:        @return
+	 * @param:        @throws Exception
+	 * @return:       List<Entity>
+	 * @throws
+	 * @author        Administrator
+	 * @Date          2015年8月7日 下午4:53:02
+	 */
+
+	public List<EntityObj> loadBySQL(final String sql,Class clazz, final int start, final int size)throws Exception;
 
 	/**
 	 *
