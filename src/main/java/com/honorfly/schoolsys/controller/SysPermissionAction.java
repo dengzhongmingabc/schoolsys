@@ -164,9 +164,8 @@ public class SysPermissionAction extends BaseController {
 		userInfo.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
 		userInfo.put("status","1");
 		userInfo.put("username",sessionUser.getUsername());
-		userInfo.put("roleId","admin");
+		userInfo.put("mobile",sessionUser.getMobile());
 		userInfo.put("role",role);
-
 		return ResultGenerator.genSuccessResult(userInfo);
 	}
 
@@ -398,6 +397,67 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(result);
     }
 
+
+	@ApiOperation(value="角色id查询角色所有的权限")
+	@ResponseBody
+	@RequestMapping(value = "/listPermission",method = RequestMethod.POST)
+	public Result listPermission() throws Exception{
+		List<Map<String,Object>> userpers = new ArrayList<Map<String,Object>>();
+
+		List checkeds = new ArrayList();
+		List<Map> list = new ArrayList<Map>();
+		List<SysPermission> dics = sysPermissionService.queryParent();
+		for(SysPermission dd:dics){
+			Map<String,Object> root = new HashMap<String,Object>();
+			root.put("id", dd.getId());
+			root.put("parentId", dd.getParentId());
+			root.put("name", dd.getTitle());
+			root.put("status", dd.getStatus());
+			root.put("expanded", false);
+			boolean isExsitlevel1 = isExit(userpers,dd.getId());
+			root.put("checked", isExsitlevel1);
+			dics = sysPermissionService.listByParentId(dd.getId());
+			List<Map> chs2 = new ArrayList<Map>();
+			for(SysPermission d:dics){
+				Map rdm = new HashMap();
+				rdm.put("id",d.getId());
+				rdm.put("expanded", false);
+				rdm.put("name",d.getTitle());
+				rdm.put("url",d.getRedirect());
+				rdm.put("parentId",d.getParentId());
+				rdm.put("status", d.getStatus());
+				boolean isExsitlevel2 = isExit(userpers,d.getId());
+				rdm.put("checked", isExsitlevel2);
+				rdm.put("leaf", false);
+				rdm.put("iconCls", "a");
+				List<Map> chs3 = new ArrayList<Map>();
+				dics = sysPermissionService.listByParentId(d.getId());
+				for(SysPermission buttion:dics){
+					Map b = new HashMap();
+					b.put("id",buttion.getId());
+					b.put("expanded", true);
+					b.put("name",buttion.getTitle());
+					b.put("url",buttion.getRedirect());
+					b.put("parentId",buttion.getParentId());
+					b.put("status", buttion.getStatus());
+					boolean isExsitlevel3 = isExit(userpers,buttion.getId());
+					b.put("checked", isExsitlevel3);
+					b.put("leaf", true);
+					chs3.add(b);
+				}
+				rdm.put("children", chs3);
+				chs2.add(rdm);
+			}
+			root.put("children", chs2);
+			list.add(root);
+		}
+		Map result = new HashMap();
+		result.put("treeData",list);
+		result.put("permissions",checkeds);
+		return ResultGenerator.genSuccessResult(result);
+	}
+
+
 	private boolean isExit(List<Map<String,Object>> userper,Long id){
 		if(userper!=null){
 			for(Map<String,Object> up:userper){
@@ -446,6 +506,15 @@ public class SysPermissionAction extends BaseController {
 			sysRole.getSchools().clear();
 			sysRole.getSchools().addAll(schools);
 		}
+
+		if(!StringUtils.isBlank(sysRoleForm.getNewpermissions())){
+			List syspermission = sysPermissionService.listSysPermissionByIDString(sysRoleForm.getNewpermissions());
+			sysRole.getPermissions().clear();
+			sysRole.getPermissions().addAll(syspermission);
+		}else{
+			sysRole.getPermissions().clear();
+		}
+
 		sysPermissionService.save(sysRole);
 		return ResultGenerator.genSuccessResult();
     }
@@ -517,8 +586,8 @@ public class SysPermissionAction extends BaseController {
 			mo.put("roleName", ((SysRole)sm).getRoleName());
 			mo.put("createTime", ((SysRole)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysRole)sm).getCreatedDate()));
 			mo.put("invalid",((SysRole) sm).getInvalid());
+			mo.put("schools",((SysRole) sm).getSchools());
 			list.add(mo);
-
 		}
 		page.setData(list);
 		return ResultGenerator.genSuccessResult(page);

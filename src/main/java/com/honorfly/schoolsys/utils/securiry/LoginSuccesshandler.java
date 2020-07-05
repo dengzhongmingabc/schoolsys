@@ -84,6 +84,7 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
         redisUser.setRealName(user.getRealName());
         redisUser.setParentId(user.getParentId());
         redisUser.setAdminId(user.getAdminId());
+        redisUser.setMobile(user.getMobile());
         redisUser.setAdmin(user.getAdmin());
         for (SysRole role : user.getRoles()) {
             if (role.getSchools() != null && role.getSchools().size() > 0) {

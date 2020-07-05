@@ -3,10 +3,7 @@ package com.honorfly.schoolsys.utils.securiry;
 import com.alibaba.fastjson.JSON;
 import com.honorfly.schoolsys.entry.SessionUser;
 import com.honorfly.schoolsys.service.impl.SysUserServiceImpl;
-import com.honorfly.schoolsys.utils.AppConfig;
-import com.honorfly.schoolsys.utils.AppConst;
-import com.honorfly.schoolsys.utils.JWT;
-import com.honorfly.schoolsys.utils.ResultGenerator;
+import com.honorfly.schoolsys.utils.*;
 import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -56,13 +53,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         if(!StringUtils.isBlank(authToken)&&claim == null){
             //过期
-            response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("非法或者过期token，请登录！")));
+            response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"非法或者过期token，请登录！")));
             return;
         }
         if (claim != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             SessionUser sessionUser = (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace +claim.getSubject());
             if(sessionUser==null){
-                response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("会话过期，请重新登录！")));
+                response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"会话过期，请重新登录！")));
                 return;
             }
             //重新刷新一下redis里的key 的时间

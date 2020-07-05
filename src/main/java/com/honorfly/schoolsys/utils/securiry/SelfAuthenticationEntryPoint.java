@@ -1,6 +1,7 @@
 package com.honorfly.schoolsys.utils.securiry;
 
 import com.alibaba.fastjson.JSON;
+import com.honorfly.schoolsys.utils.ResultCode;
 import com.honorfly.schoolsys.utils.ResultGenerator;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,6 +19,6 @@ import java.io.IOException;
 public class SelfAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        httpServletResponse.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("Need login")));
+        httpServletResponse.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"Need login")));
     }
 }

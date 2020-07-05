@@ -27,11 +27,10 @@ public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 			sbsql.append(" and  role.role_name like :content");
 			args.put("content", "%"+search.get("name")+"%");
 		}
-/*		if(!StringUtils.isBlank(search.get("invalid"))){
+		if(!StringUtils.isBlank(search.get("invalid"))){
 			sbsql.append(" and  role.invalid = :invalid");
 			args.put("invalid", Boolean.valueOf(search.get("invalid")));
-		}*/
-		sbsql.append(" and invalid = true ");
+		}
 		sbsql.append(" and admin_id = " + getAdminId() + " ");
 		sbsql.append(" order by role.created_date desc");
 		return PageFactory.createPageBySql(this, sbsql.toString(), args, SysRole.class, currentPage, pageSize);
