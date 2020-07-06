@@ -65,7 +65,7 @@ public class SysUserDaoImpl extends BaseDaoImpl implements ISysUserDao {
 			sbsql.append(" and  (sysuser.real_name like :realName) ");
 			args.put("realName", "%"+where.get("realName")+"%");
 		}
-		sbsql.append(" and invalid = true ");
+		//sbsql.append(" and invalid = true ");
 		//sbsql.append(" and school_id = "+getSchoolId()+" ");
 		sbsql.append(" and admin_id = " + getAdminId() + " ");
 		sbsql.append(" order by id desc");

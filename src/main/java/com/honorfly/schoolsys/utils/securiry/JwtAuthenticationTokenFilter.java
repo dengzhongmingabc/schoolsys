@@ -51,6 +51,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
             }
         }
+        if(StringUtils.isBlank(authToken)&&!request.getRequestURI().equals("/login")){
+            //过期
+            response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"非法或者过期token，请登录！")));
+            return;
+        }
         if(!StringUtils.isBlank(authToken)&&claim == null){
             //过期
             response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"非法或者过期token，请登录！")));

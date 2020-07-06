@@ -697,9 +697,8 @@ public class SysPermissionAction extends BaseController {
 						   String department,
 						   String mobile) throws Exception {
 		if(StringUtils.isBlank(userName)||
-				StringUtils.isBlank(realName)||
-				StringUtils.isBlank(position)){
-			return ResultGenerator.genFailResult("idsStr不能为空！");
+				StringUtils.isBlank(realName)){
+			return ResultGenerator.genFailResult("必要参数不能为空！");
 		}
 		SysUser  dd = new SysUser();
 		if(status!=null){
