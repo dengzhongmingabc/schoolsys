@@ -1,5 +1,9 @@
 package com.honorfly.schoolsys.utils.securiry;
 
+import com.honorfly.schoolsys.entry.SessionUser;
+import com.honorfly.schoolsys.utils.AppConst;
+import com.honorfly.schoolsys.utils.redis.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -13,37 +17,29 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component("selfrbacservice")
 public class SelfRbacService {
+
+    @Autowired
+    RedisUtil redisUtil;
+
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         Object obj = authentication.getPrincipal();
         if (obj instanceof UserDetails) {
-            //登录过了
-  /*          boolean pass = false;
-            String requestUrl = request.getRequestURI();
-            //看是否在白名单里
-            for (String url:AppWhiteList.whiteList){
-                if(url.endsWith(requestUrl)){
-                    pass = true;
-                    break;
-                }
+            if(AppWhiteList.needLoginWhiteList.contains(request.getRequestURI())){
+                return true;
             }
-            if(pass){
-                return pass;
+
+            if(AppWhiteList.notNeedLoginWhiteList.contains(request.getRequestURI())){
+                return true;
             }
+
             SessionUser sessionUser = (SessionUser) obj;
-            for (SysPermission permission : sessionUser.buttons) {
-                String url = permission.getRedirect();
-                System.out.println(url);
-                if (url.endsWith(requestUrl)) {
-                    pass = true;
-                    break;
-                }
+            SessionUser redisUser = (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace+sessionUser.getId());
+            if(redisUser.buttonsUrls.contains(request.getRequestURI())){
+                return true;
             }
-            //做权限配对，配对上有权限，通过
-            return pass;*/
-         return true;
+            return false;
         } else {
             //没有登录
-
             return false;
         }
     }

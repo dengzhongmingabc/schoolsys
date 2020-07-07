@@ -1,6 +1,7 @@
 package com.honorfly.schoolsys.utils.securiry;
 
 import com.alibaba.fastjson.JSON;
+import com.honorfly.schoolsys.utils.ResultCode;
 import com.honorfly.schoolsys.utils.ResultGenerator;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -20,8 +21,9 @@ import java.io.IOException;
     public class MyAccessDeniedHandler implements AccessDeniedHandler {
         @Override
         public void handle(HttpServletRequest httpServletRequest, HttpServletResponse resp,AccessDeniedException e) throws IOException {
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            //resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
             resp.setContentType("application/json;charset=UTF-8");
-            resp.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult("权限不足，请联系管理员!")));
+            resp.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.FORBIDDEN_ERR,"权限不足，请联系管理员!")));
         }
     }

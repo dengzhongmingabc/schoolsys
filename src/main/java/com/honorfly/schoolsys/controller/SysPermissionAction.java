@@ -90,6 +90,9 @@ public class SysPermissionAction extends BaseController {
 				boolean flag = false;
 				dics = sysPermissionService.getPermissionsByParentId(permissions,d.getId());
 				for(SysPermission buttion:dics){
+					if (buttion.getIsLeaf()) {
+						continue;
+					}
 					flag = true;
 					Map navlevel3 = new HashMap();
 					navlevel3.put("name",buttion.getName());
@@ -248,74 +251,111 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/listByPage3",method = RequestMethod.POST)
 	public Result listByPage3() throws Exception{
-		List<Map> list = new ArrayList<Map>();
-		List<SysPermission> dics = sysPermissionService.queryParent();
-		for(SysPermission dd:dics){
-			Map<String,Object> root = new HashMap<String,Object>();
-			root.put("id", dd.getId());
-			//root.put("parentId", dd.getParentId());
-			root.put("title", dd.getTitle());
-			root.put("text", dd.getTitle());
-			root.put("status", dd.getStatus());
-			root.put("url",dd.getRedirect());
-			root.put("expanded", true);
-			root.put("level", 0);
-			root.put("leaf", false);
-			root.put("icon",dd.getIcon());
-			root.put("component",dd.getComponent());
-			root.put("name",dd.getName());
-			root.put("show",dd.getShow());
-			dics = sysPermissionService.listByParentId(dd.getId());
+		List<Map> resultLevel1 = new ArrayList<Map>();
+		List<SysPermission> dataLevel1 = sysPermissionService.queryParent();
+		for(SysPermission level1:dataLevel1){
+			Map<String,Object> level1Map = new HashMap<String,Object>();
+			level1Map.put("id", level1.getId());
+			//level1Map.put("parentId", level1.getParentId());
+			level1Map.put("title", level1.getTitle());
+			level1Map.put("text", level1.getTitle());
+			level1Map.put("status", level1.getStatus());
+			level1Map.put("url",level1.getRedirect());
+			level1Map.put("expanded", true);
+			level1Map.put("level", 0);
+			level1Map.put("leaf", false);
+			level1Map.put("icon",level1.getIcon());
+			level1Map.put("component",level1.getComponent());
+			level1Map.put("name",level1.getName());
+			level1Map.put("show",level1.getShow());
 
-			List<Map> chs2 = new ArrayList<Map>();
-			for(SysPermission d:dics){
-				Map rdm = new HashMap();
-				rdm.put("id",d.getId());
-				rdm.put("expanded", false);
-				rdm.put("title",d.getTitle());
-				rdm.put("text",d.getTitle());
-				rdm.put("url",d.getRedirect());
-				rdm.put("parentId",d.getParentId());
-				rdm.put("status", d.getStatus());
-				rdm.put("expanded", false);
-				rdm.put("leaf", false);
-				rdm.put("level", 1);
-				rdm.put("icon",d.getIcon());
-				rdm.put("component",d.getComponent());
-				rdm.put("name",d.getName());
-				rdm.put("show",d.getShow());
-				List<Map> chs3 = new ArrayList<Map>();
-				dics = sysPermissionService.listByParentId(d.getId());
-				for(SysPermission buttion:dics){
-					Map b = new HashMap();
-					b.put("id",buttion.getId());
-					b.put("expanded", false);
-					b.put("title",buttion.getTitle());
-					b.put("text",buttion.getTitle());
-					b.put("url",buttion.getRedirect());
-					b.put("parentId",buttion.getParentId());
-					b.put("status", buttion.getStatus());
-					b.put("leaf", true);
-					b.put("level", 2);
-					b.put("component",buttion.getComponent());
-					b.put("name",buttion.getName());
-					b.put("show",buttion.getShow());
-					chs3.add(b);
+
+			List<Map> resultLevel2 = new ArrayList<Map>();
+			List<SysPermission> dataLevel2 = sysPermissionService.listByParentId(level1.getId());
+			for(SysPermission level2:dataLevel2){
+				Map level2Map = new HashMap();
+				level2Map.put("id",level2.getId());
+				level2Map.put("expanded", false);
+				level2Map.put("title",level2.getTitle());
+				level2Map.put("text",level2.getTitle());
+				level2Map.put("url",level2.getRedirect());
+				level2Map.put("parentId",level2.getParentId());
+				level2Map.put("status", level2.getStatus());
+				level2Map.put("leaf", false);
+				level2Map.put("level", 1);
+				level2Map.put("icon",StringUtils.isBlank(level2.getIcon())?"----":level2.getIcon());
+				level2Map.put("component",level2.getComponent());
+				level2Map.put("name",level2.getName());
+				level2Map.put("show",level2.getShow());
+
+
+
+				List<Map> resultLevel3 = new ArrayList<Map>();
+				List<Map> resultLevelButton3 = new ArrayList<Map>();
+				List<SysPermission> dataLevel3 = sysPermissionService.listByParentId(level2.getId());
+				for(SysPermission level3:dataLevel3){
+					Map level3Map = new HashMap();
+					level3Map.put("id",level3.getId());
+					level3Map.put("expanded", false);
+					level3Map.put("title",level3.getTitle());
+					level3Map.put("text",level3.getTitle());
+					level3Map.put("url",level3.getRedirect());
+					level3Map.put("parentId",level3.getParentId());
+					level3Map.put("status", level3.getStatus());
+					level3Map.put("leaf", level3.getIsLeaf());
+					level3Map.put("level", 2);
+					level3Map.put("component",StringUtils.isBlank(level3.getComponent())?"----":level3.getComponent());
+					level3Map.put("name",level3.getName());
+					level3Map.put("show",level3.getShow());
+					level3Map.put("icon",StringUtils.isBlank(level3.getIcon())?"----":level3.getIcon());
+
+					List<Map> resultLevelButton4 = new ArrayList<Map>();
+					List<SysPermission> dataLevel4 = sysPermissionService.listByParentId(level3.getId());
+					for(SysPermission btn:dataLevel4) {
+						Map btnMap = new HashMap();
+						btnMap.put("id", btn.getId());
+						btnMap.put("expanded", false);
+						btnMap.put("title", btn.getTitle());
+						btnMap.put("text", btn.getTitle());
+						btnMap.put("url", btn.getRedirect());
+						btnMap.put("parentId", btn.getParentId());
+						btnMap.put("status", btn.getStatus());
+						btnMap.put("leaf", btn.getIsLeaf());
+						btnMap.put("level", 3);
+						btnMap.put("component", "----");
+						btnMap.put("name", btn.getName());
+						btnMap.put("show", btn.getShow());
+						btnMap.put("icon",StringUtils.isBlank(btn.getIcon())?"----":btn.getIcon());
+						resultLevelButton4.add(btnMap);
+
+					}
+					if(resultLevelButton4.size()>0){
+						level3Map.put("children",resultLevelButton4);
+					}
+					resultLevel3.add(level3Map);
+					/*if(level3.getIsLeaf()){
+						resultLevelButton3.add(level3Map);
+					}else{
+						resultLevel3.add(level3Map);
+					}*/
+
 				}
-				if(chs3.size()>0){
-					rdm.put("children", chs3);
+				if(resultLevel3.size()>0){
+					level2Map.put("children", resultLevel3);
 				}
-				rdm.put("nodes", chs3);
-				chs2.add(rdm);
+				level2Map.put("nodes", resultLevel3);
+				//level2Map.put("buttons",resultLevelButton3);
+				resultLevel2.add(level2Map);
 			}
-			if(chs2.size()>0){
-				root.put("children", chs2);
+			if(resultLevel2.size()>0){
+				level1Map.put("children", resultLevel2);
 			}
-			root.put("nodes", chs2);
-			list.add(root);
+			level1Map.put("nodes", resultLevel2);
+			resultLevel1.add(level1Map);
 		}
-		return ResultGenerator.genSuccessResult(list);
+		return ResultGenerator.genSuccessResult(resultLevel1);
 	}
+
 
 	@ApiOperation(value="角色id查询角色所有的权限")
 	@ResponseBody
@@ -369,12 +409,30 @@ public class SysPermissionAction extends BaseController {
 					b.put("status", buttion.getStatus());
 					boolean isExsitlevel3 = isExit(userpers,buttion.getId());
 					b.put("checked", isExsitlevel3);
-					b.put("leaf", true);
-					chs3.add(b);
-					if (isExsitlevel3){
+					b.put("leaf", buttion.getIsLeaf());
+					List<Map> chs4 = new ArrayList<Map>();
+					dics = sysPermissionService.listByParentId(buttion.getId());
+					if (isExsitlevel3&&dics.size()<1){
 						checkeds.add(buttion.getId());
 					}
-
+					for(SysPermission btn:dics){
+						Map btnMap = new HashMap();
+						btnMap.put("id",btn.getId());
+						btnMap.put("expanded", true);
+						btnMap.put("name",btn.getTitle());
+						btnMap.put("url",btn.getRedirect());
+						btnMap.put("parentId",btn.getParentId());
+						btnMap.put("status", btn.getStatus());
+						boolean isExsitlevel4 = isExit(userpers,btn.getId());
+						btnMap.put("checked", isExsitlevel4);
+						btnMap.put("leaf", buttion.getIsLeaf());
+						chs4.add(btnMap);
+						if (isExsitlevel4){
+							checkeds.add(buttion.getId());
+						}
+					}
+					b.put("children", chs4);
+					chs3.add(b);
 				}
 				rdm.put("children", chs3);
 				chs2.add(rdm);
@@ -382,7 +440,6 @@ public class SysPermissionAction extends BaseController {
 			root.put("children", chs2);
 			list.add(root);
 		}
-
 
 		/*checkeds.add(7);
 		checkeds.add(10);
@@ -397,65 +454,6 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(result);
     }
 
-
-	@ApiOperation(value="角色id查询角色所有的权限")
-	@ResponseBody
-	@RequestMapping(value = "/listPermission",method = RequestMethod.POST)
-	public Result listPermission() throws Exception{
-		List<Map<String,Object>> userpers = new ArrayList<Map<String,Object>>();
-
-		List checkeds = new ArrayList();
-		List<Map> list = new ArrayList<Map>();
-		List<SysPermission> dics = sysPermissionService.queryParent();
-		for(SysPermission dd:dics){
-			Map<String,Object> root = new HashMap<String,Object>();
-			root.put("id", dd.getId());
-			root.put("parentId", dd.getParentId());
-			root.put("name", dd.getTitle());
-			root.put("status", dd.getStatus());
-			root.put("expanded", false);
-			boolean isExsitlevel1 = isExit(userpers,dd.getId());
-			root.put("checked", isExsitlevel1);
-			dics = sysPermissionService.listByParentId(dd.getId());
-			List<Map> chs2 = new ArrayList<Map>();
-			for(SysPermission d:dics){
-				Map rdm = new HashMap();
-				rdm.put("id",d.getId());
-				rdm.put("expanded", false);
-				rdm.put("name",d.getTitle());
-				rdm.put("url",d.getRedirect());
-				rdm.put("parentId",d.getParentId());
-				rdm.put("status", d.getStatus());
-				boolean isExsitlevel2 = isExit(userpers,d.getId());
-				rdm.put("checked", isExsitlevel2);
-				rdm.put("leaf", false);
-				rdm.put("iconCls", "a");
-				List<Map> chs3 = new ArrayList<Map>();
-				dics = sysPermissionService.listByParentId(d.getId());
-				for(SysPermission buttion:dics){
-					Map b = new HashMap();
-					b.put("id",buttion.getId());
-					b.put("expanded", true);
-					b.put("name",buttion.getTitle());
-					b.put("url",buttion.getRedirect());
-					b.put("parentId",buttion.getParentId());
-					b.put("status", buttion.getStatus());
-					boolean isExsitlevel3 = isExit(userpers,buttion.getId());
-					b.put("checked", isExsitlevel3);
-					b.put("leaf", true);
-					chs3.add(b);
-				}
-				rdm.put("children", chs3);
-				chs2.add(rdm);
-			}
-			root.put("children", chs2);
-			list.add(root);
-		}
-		Map result = new HashMap();
-		result.put("treeData",list);
-		result.put("permissions",checkeds);
-		return ResultGenerator.genSuccessResult(result);
-	}
 
 
 	private boolean isExit(List<Map<String,Object>> userper,Long id){

@@ -31,7 +31,7 @@ public class SysPermissionForm {
 
 	@ApiModelProperty(value="名称",required=true)
 	private String name;
-	@ApiModelProperty(value="组件",required=true)
+	@ApiModelProperty(value="组件")
 	private String component;
 	@ApiModelProperty(value="是否显示")
 	private Boolean isShow = true;

@@ -21,6 +21,10 @@ private long id;
 
 	public List<School> schools = new ArrayList<School>();
 
+	public List<SysPermission> buttons = new ArrayList<SysPermission>();
+
+	public List<String> buttonsUrls = new ArrayList<String>();
+
 	private Long parentId;
 
 	private Long departmentId;
@@ -101,7 +105,7 @@ private long id;
 		return true;
 	}
 
-	public List<SysPermission> buttons = new ArrayList<SysPermission>();
+
 
 	public String getPassword() {
 		return password;

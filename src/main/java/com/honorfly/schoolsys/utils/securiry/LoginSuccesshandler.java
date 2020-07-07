@@ -2,6 +2,7 @@ package com.honorfly.schoolsys.utils.securiry;
 
 import com.alibaba.fastjson.JSON;
 import com.honorfly.schoolsys.entry.SessionUser;
+import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.service.ISysPermissionService;
@@ -92,6 +93,10 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
             }
             if (role.getPermissions() != null && role.getPermissions().size() > 0) {
                 redisUser.buttons.addAll(role.getPermissions());
+                for (SysPermission permission:role.getPermissions()){
+                    if (permission.getIsLeaf())
+                        redisUser.buttonsUrls.add(permission.getRedirect());
+                }
             }
         }
         redisUtil.set(AppConst.Redis_Session_Namespace + redisUser.getId(), redisUser, appConfig.getSessionExpire());

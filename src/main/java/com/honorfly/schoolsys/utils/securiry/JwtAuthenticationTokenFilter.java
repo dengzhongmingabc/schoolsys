@@ -51,7 +51,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
             }
         }
-        if(StringUtils.isBlank(authToken)&&!request.getRequestURI().equals("/login")){
+        if(StringUtils.isBlank(authToken)&&!AppWhiteList.notNeedLoginWhiteList.contains(request.getRequestURI())){
             //过期
             response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(ResultCode.NEED_LOGIN,"非法或者过期token，请登录！")));
             return;
