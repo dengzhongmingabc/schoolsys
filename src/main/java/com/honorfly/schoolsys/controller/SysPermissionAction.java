@@ -2,6 +2,7 @@ package com.honorfly.schoolsys.controller;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.honorfly.schoolsys.entry.*;
 import com.honorfly.schoolsys.form.IDForm;
 import com.honorfly.schoolsys.form.SysPermissionForm;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URLDecoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -122,7 +124,7 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(navs);
 	}
 
-	@ApiOperation(value="用户信息")
+	/*@ApiOperation(value="用户信息")
 	@ResponseBody
 	@RequestMapping(value = "/info",method = RequestMethod.POST)
 	public Result info() throws Exception{
@@ -171,8 +173,55 @@ public class SysPermissionAction extends BaseController {
 		userInfo.put("role",role);
 		return ResultGenerator.genSuccessResult(userInfo);
 	}
+*/
 
 
+	@ApiOperation(value="用户信息")
+	@ResponseBody
+	@RequestMapping(value = "/info",method = RequestMethod.POST)
+	public Result info() throws Exception{
+		SessionUser sessionUser = this.getRedisSession();
+		Map role = new HashMap();
+		role.put("id","admin");
+		role.put("name","管理员");
+		role.put("describe","拥有所有权限");
+		role.put("creatorId","system");
+		role.put("createTime","1497160610259");
+		role.put("deleted",0);
+		role.put("status",1);
+		List permissions = new ArrayList();
+		Map<Long,List<SysPermission>> userGroupMap = sessionUser.buttons.stream().filter(p->p.getIsLeaf()!=null && p.getIsLeaf()).collect(Collectors.groupingBy(SysPermission::getParentId));
+		for(Map.Entry<Long, List<SysPermission>> entry : userGroupMap.entrySet()){
+			long mapKey = entry.getKey();
+			SysPermission parent = baseService.getById(SysPermission.class,mapKey);
+			Map pession = new HashMap();
+			pession.put("roleId","admin");
+			pession.put("permissionId",parent.getName());
+			pession.put("permissionName",parent.getTitle());
+			List<SysPermission> mapValue = entry.getValue();
+			List actions = new ArrayList();
+			for (SysPermission son:mapValue){
+				Map action = new HashMap();
+				action.put("action",son.getName());
+				action.put("defaultCheck",false);
+				action.put("describe",son.getTitle());
+				actions.add(action);
+			}
+			pession.put("actionEntitySet",actions);
+			permissions.add(pession);
+		}
+		role.put("permissions",permissions);
+		Map userInfo = new HashMap();
+		userInfo.put("name",sessionUser.getRealName());
+		userInfo.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
+		userInfo.put("status","1");
+		userInfo.put("username",sessionUser.getUsername());
+		userInfo.put("mobile",sessionUser.getMobile());
+		userInfo.put("role",role);
+		com.alibaba.fastjson.JSON json = new JSONObject(userInfo);
+		System.out.println("yyyyyy----"+json);
+		return ResultGenerator.genSuccessResult(userInfo);
+	}
 
 
 	@ApiOperation(value="用戶注销")
