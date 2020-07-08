@@ -421,7 +421,7 @@ public class SysPermissionAction extends BaseController {
 			Map<String,Object> root = new HashMap<String,Object>();
 			root.put("id", dd.getId());
 			root.put("parentId", dd.getParentId());
-			root.put("name", dd.getTitle());
+			root.put("name", dd.getTitle()+dd.getId());
 			root.put("status", dd.getStatus());
 			root.put("expanded", false);
 			boolean isExsitlevel1 = isExit(userpers,dd.getId());
@@ -435,7 +435,7 @@ public class SysPermissionAction extends BaseController {
 				Map rdm = new HashMap();
 				rdm.put("id",d.getId());
 				rdm.put("expanded", false);
-				rdm.put("name",d.getTitle());
+				rdm.put("name",d.getTitle()+d.getId());
 				rdm.put("url",d.getRedirect());
 				rdm.put("parentId",d.getParentId());
 				rdm.put("status", d.getStatus());
@@ -452,7 +452,7 @@ public class SysPermissionAction extends BaseController {
 					Map b = new HashMap();
 					b.put("id",buttion.getId());
 					b.put("expanded", true);
-					b.put("name",buttion.getTitle());
+					b.put("name",buttion.getTitle()+buttion.getId());
 					b.put("url",buttion.getRedirect());
 					b.put("parentId",buttion.getParentId());
 					b.put("status", buttion.getStatus());
@@ -468,16 +468,16 @@ public class SysPermissionAction extends BaseController {
 						Map btnMap = new HashMap();
 						btnMap.put("id",btn.getId());
 						btnMap.put("expanded", true);
-						btnMap.put("name",btn.getTitle());
+						btnMap.put("name",btn.getTitle()+btn.getId());
 						btnMap.put("url",btn.getRedirect());
 						btnMap.put("parentId",btn.getParentId());
 						btnMap.put("status", btn.getStatus());
 						boolean isExsitlevel4 = isExit(userpers,btn.getId());
 						btnMap.put("checked", isExsitlevel4);
-						btnMap.put("leaf", buttion.getIsLeaf());
+						btnMap.put("leaf", btn.getIsLeaf());
 						chs4.add(btnMap);
 						if (isExsitlevel4){
-							checkeds.add(buttion.getId());
+							checkeds.add(btn.getId());
 						}
 					}
 					b.put("children", chs4);
@@ -490,11 +490,7 @@ public class SysPermissionAction extends BaseController {
 			list.add(root);
 		}
 
-		/*checkeds.add(7);
-		checkeds.add(10);
-		checkeds.add(11);*/
-
-
+		System.out.println(checkeds);
 
 		Map result = new HashMap();
 		result.put("treeData",list);
