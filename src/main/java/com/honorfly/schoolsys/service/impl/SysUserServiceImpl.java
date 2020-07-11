@@ -29,6 +29,7 @@ public class SysUserServiceImpl extends BaseService implements ISysUserService {
 	public List roleList() throws Exception {
 		StringBuffer sbsql = new StringBuffer(" select role.* from sys_role role where 1=1 ");
 		sbsql.append(" and invalid = true ");
+		sbsql.append(" and is_lock = false ");
 		sbsql.append(" and admin_id = " + baseDaoImpl.getAdminId() + " ");
 		sbsql.append(" order by id desc");
 		return baseDaoImpl.loadBySQL(sbsql.toString(),SysRole.class);

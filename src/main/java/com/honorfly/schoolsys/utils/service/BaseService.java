@@ -1,10 +1,16 @@
 package com.honorfly.schoolsys.utils.service;
 
+import com.honorfly.schoolsys.entry.SessionUser;
+import com.honorfly.schoolsys.entry.SysPermission;
+import com.honorfly.schoolsys.utils.AppConfig;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
 import com.honorfly.schoolsys.utils.dao.IBaseDao;
+import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,94 +23,97 @@ import java.util.Map;
 @Transactional
 public class BaseService implements IBaseService {
 
-	@Autowired
-	protected IBaseDao baseDaoImpl;
+    @Autowired
+    protected IBaseDao baseDaoImpl;
 
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    protected RedisUtil redisUtil;
+    @Autowired
+    protected AppConfig appConfig;
 
-	public BaseService setClass(Class class1){
-		baseDaoImpl.setClass(class1);
-		return this;
-	}
+    public SessionUser getSession() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SessionUser sessionUser = (SessionUser) auth.getPrincipal();
+        return sessionUser;
+    }
 
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void delete(Long id)throws Exception {
-		baseDaoImpl.delete(id);
-	}
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Long save(EntityObj data) throws Exception {
+        if (data.id == null || data.id.toString().length() < 1) {
+            data.lastModifiedDate = new Date();
+            data.lastModifier = getSession().getUsername();
+            data.lastModifierId = getSession().getId();
+            data.setCreater(getSession().getUsername());
+            data.setCreaterId(getSession().getId());
+            data.setAdminId(getSession().getAdminId());
+            data.setSchoolId(getSession().getSchoolId());
+        } else {
+            data.lastModifiedDate = new Date();
+            data.lastModifier = getSession().getUsername();
+            data.lastModifierId = getSession().getId();
+        }
 
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void delete(EntityObj data)throws Exception {
-		baseDaoImpl.delete(data);
-	}
+        baseDaoImpl.save(data);
+        return data.id;
+    }
 
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void deleteByID(Long id)throws Exception {
-		baseDaoImpl.delete(id);
-	}
+    /**
+     * 逻辑删除
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public <T> void logicDelete(Class<T> clazz, Long id) throws Exception {
+        EntityObj entityObj = (EntityObj) this.getById(clazz, id);
+        entityObj.setInvalid(false);
+        this.save(entityObj);
+    }
 
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public Long save(EntityObj data) throws Exception {
-		if (data.id == null || data.id.toString().length() < 1)
-			data.lastModifiedDate = new Date();
-		baseDaoImpl.save(data);
-		return data.id;
-	}
+    /**
+     * 删除
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public <T> void delete(Class<T> clazz, Long id) throws Exception {
+        EntityObj entityObj = (EntityObj) this.getById(clazz, id);
+        baseDaoImpl.delete(entityObj);
+    }
 
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void save(Object entity) {
-		// TODO Auto-generated method stub
-		baseDaoImpl.save(entity);
-	}
+    /**
+     * 查询实体
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public <T> T getById(Class<T> clazz, Object id) throws Exception {
+        EntityObj entityObj = (EntityObj) baseDaoImpl.getById(clazz, id);
+        if (entityObj == null || !entityObj.invalid) {
+            throw new BaseException("没有对应的数据");
+        }
+        if (!(entityObj instanceof SysPermission) && !getSession().getAdminId().equals(entityObj.getAdminId())){
+			throw new BaseException("没有对应的数据");
+		}
+        return (T) entityObj;
+    }
 
-	/**
-	 * 修改
-	 */
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public void update(Object entity) {
-		// TODO Auto-generated method stub
-		baseDaoImpl.update(entity);
-	}
+    public Page getDataPageBySQL(String sql, Class clazz, Map<String, String> args, int curPage, int pageSize)
+            throws Exception// 返回视图
+    {
+        return PageFactory.createPageBySql(baseDaoImpl, sql, args, clazz, curPage, pageSize);
+    }
 
-	/**
-	 * 删除
-	 */
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED)
-	public <T> void delete(Class<T> clazz, Long id) throws Exception {
-		baseDaoImpl.delete(clazz, id);
+    public Page getMapDataPageBySQL(String sql, Map<String, String> args, int curPage, int pageSize)
+            throws Exception// 返回视图
+    {
+        return PageFactory.createMapPageBySql(baseDaoImpl, sql, args, curPage, pageSize);
+    }
 
-	}
+    public List loadMapBySQL(final String sql, final Map<String, String> args) throws Exception {
+        return baseDaoImpl.loadMapBySQL(sql, args);
+    }
 
-	/**
-	 * 查询实体
-	 */
-	@Override
-	@Transactional(readOnly = true)
-	public <T> T getById(Class<T> clazz, Object id) {
-		return baseDaoImpl.getById(clazz, id);
-	}
-
-	public Page getDataPageBySQL(String sql, Class clazz, Map<String, String> args, int curPage, int pageSize)
-			throws Exception// 返回视图
-	{
-		return PageFactory.createPageBySql(baseDaoImpl, sql,  args, clazz, curPage, pageSize);
-	}
-
-	public Page getDataPageByJPQL(String sql, Map<String, String> args, int curPage, int pageSize)
-			throws Exception// 返回视图
-	{
-		return PageFactory.createPageByJPQL(baseDaoImpl, sql,  args, curPage, pageSize);
-	}
-
-	public List loadMapBySQL(final String sql,final Map<String,String> args)throws Exception {
-		return baseDaoImpl.loadMapBySQL(sql, args);
-	}
-
-	public List loadBySQL(final String sql, final Map<String,String> args,Class clazz)throws Exception {
-		return baseDaoImpl.loadBySQL(sql, args, clazz);
-	}
+    public List loadBySQL(final String sql, final Map<String, String> args, Class clazz) throws Exception {
+        return baseDaoImpl.loadBySQL(sql, args, clazz);
+    }
 }

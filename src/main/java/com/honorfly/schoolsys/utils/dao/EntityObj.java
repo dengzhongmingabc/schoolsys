@@ -34,12 +34,23 @@ public class EntityObj implements Serializable, IElement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    /*最后修改的人*/
-    @Column(name = "last_modifier")
-    public String lastModifier;
     /*创建的人时间*/
     @Column(name = "created_date")
     public Date createdDate;
+
+    @Column(name = "creater")
+    public String creater;
+
+    @Column(name = "creater_id")
+    public Long createrId;
+
+    /*最后修改的人*/
+    @Column(name = "last_modifier")
+    public String lastModifier;
+    /*最后修改的人*/
+    @Column(name = "last_modifier_id")
+    public Long lastModifierId;
+
     /*最后修改时间*/
     @Column(name = "last_modified_date")
     public Date lastModifiedDate;
@@ -85,6 +96,37 @@ public class EntityObj implements Serializable, IElement {
         this.status = status;
     }
 
+    public Long getLastModifierId() {
+        return lastModifierId;
+    }
+
+    public String getCreater() {
+        return creater;
+    }
+
+    public void setCreater(String creater) {
+        this.creater = creater;
+    }
+
+    public Long getCreaterId() {
+        return createrId;
+    }
+
+    public void setCreaterId(Long createrId) {
+        this.createrId = createrId;
+    }
+
+    public void setLastModifierId(Long lastModifierId) {
+        this.lastModifierId = lastModifierId;
+    }
+
+    public Long getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(Long schoolId) {
+        this.schoolId = schoolId;
+    }
 
     /**
      * 无参构�?�函数，构�?�一个无效的实体

@@ -37,7 +37,8 @@ public class SelfRbacService {
             if(redisUser.buttonsUrls.contains(request.getRequestURI())){
                 return true;
             }
-            return false;
+            //return false;
+            return true;
         } else {
             //没有登录
             return false;

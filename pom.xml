@@ -71,6 +71,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.vladmihalcea</groupId>
+			<artifactId>hibernate-types-52</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -182,6 +189,8 @@
 <!--				<groupId>org.springframework.boot</groupId>-->
 <!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
 <!--			</plugin>-->
+			<!-- Jib插件 -->
+
 
 			<plugin>
 				<groupId>com.spotify</groupId>
@@ -217,6 +226,8 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

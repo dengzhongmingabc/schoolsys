@@ -537,6 +537,7 @@ public class SysPermissionAction extends BaseController {
 		SessionUser sessionUser = (SessionUser) auth.getPrincipal();
 		SessionUser redisSession = (SessionUser) redisUtil.get(AppConst.Redis_Session_Namespace+sessionUser.getId());
 		sysRole.setAdminId(redisSession.getAdminId());
+		sysRole.setLock(sysRoleForm.getIsLock());
 		if (sysRoleForm.getSelectType()==2){//选择是部分
 			List<School> schools = new ArrayList<School>();
 			if(!StringUtils.isBlank(sysRoleForm.getSchoolIdStr())){
@@ -549,7 +550,6 @@ public class SysPermissionAction extends BaseController {
 			sysRole.getSchools().clear();
 			sysRole.getSchools().addAll(schools);
 		}
-
 		if(!StringUtils.isBlank(sysRoleForm.getNewpermissions())){
 			List syspermission = sysPermissionService.listSysPermissionByIDString(sysRoleForm.getNewpermissions());
 			sysRole.getPermissions().clear();
@@ -611,14 +611,14 @@ public class SysPermissionAction extends BaseController {
 	@ApiOperation(value="角色id查询")
 	@ResponseBody
 	@RequestMapping(value = "/rolePageList",method = RequestMethod.POST)
-	public Result roleListByPage(String name, Boolean invalid,int pageNo,int pageSize) throws Exception{
+	public Result roleListByPage(String name, Boolean isLock,int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(name)){
 			name = URLDecoder.decode(name,"UTF-8");
 			search.put("name",name);
 		}
-		if(invalid!=null){
-			search.put("invalid",invalid+"");
+		if(isLock!=null){
+			search.put("isLock",isLock+"");
 		}
 		Page page = sysUserService.roleListByPage(search, pageNo, pageSize);
 		List<Map> list = new ArrayList<Map>();
@@ -628,7 +628,7 @@ public class SysPermissionAction extends BaseController {
 			mo.put("key", ((SysRole)sm).getId());
 			mo.put("roleName", ((SysRole)sm).getRoleName());
 			mo.put("createTime", ((SysRole)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysRole)sm).getCreatedDate()));
-			mo.put("invalid",((SysRole) sm).getInvalid());
+			mo.put("isLock",((SysRole) sm).getLock());
 			mo.put("schools",((SysRole) sm).getSchools());
 			list.add(mo);
 		}
@@ -674,7 +674,7 @@ public class SysPermissionAction extends BaseController {
 	public Result userPageList(String mobile,
 							   String realName,
 							   String userName,
-							   Boolean invalid,
+							   Boolean isLock,
 							   int pageNo,int pageSize) throws Exception{
 		Map<String,String> search = new HashMap<String,String>();
 		if(!StringUtils.isBlank(userName)){
@@ -689,8 +689,8 @@ public class SysPermissionAction extends BaseController {
 			mobile = URLDecoder.decode(mobile,"UTF-8");
 			search.put("mobile",mobile);
 		}
-		if(invalid!=null){
-			search.put("invalid",invalid+"");
+		if(isLock!=null){
+			search.put("isLock",isLock+"");
 		}
 		Page page = sysUserService.userPageList(search, pageNo, pageSize);
 		List<Map> list = new ArrayList<Map>();
@@ -702,7 +702,7 @@ public class SysPermissionAction extends BaseController {
 			mo.put("mobile", ((SysUser)sm).getMobile());
 			mo.put("position", ((SysUser)sm).getPosition());
 			mo.put("createTime", ((SysUser)sm).getCreatedDate()==null?"": DateUtil.getStrYMDHMByDate(((SysUser)sm).getCreatedDate()));
-			mo.put("invalid",((SysUser) sm).getInvalid());
+			mo.put("isLock",((SysUser) sm).getLock());
 			list.add(mo);
 		}
 		page.setData(list);
@@ -734,7 +734,7 @@ public class SysPermissionAction extends BaseController {
 						   String realName,
 						   String empNumber,
 						   String position,
-						   Boolean invalid,
+						   Boolean isLock,
 						   Integer status,
 						   String newRoles,
 						   String department,
@@ -747,8 +747,8 @@ public class SysPermissionAction extends BaseController {
 		if(status!=null){
 			dd.setStatus(status);
 		}
-		if(invalid!=null){
-			dd.setInvalid(invalid);
+		if(isLock!=null){
+			dd.setLock(isLock);
 		}
 		SysUser dd2 = sysUserService.queryUserByName(userName);
 		if(dd2!=null){
@@ -798,7 +798,7 @@ public class SysPermissionAction extends BaseController {
 			String realName,
 			String empNumber,
 			String position,
-			Boolean invalid,
+			Boolean isLock,
 			Integer status,
 			String newRoles,
 			String department,
@@ -812,8 +812,8 @@ public class SysPermissionAction extends BaseController {
 		if(status!=null){
 			dd.setStatus(status);
 		}
-		if(invalid!=null){
-			dd.setInvalid(invalid);
+		if(isLock!=null){
+			dd.setLock(isLock);
 		}
 		SysUser dd2 = sysUserService.queryUserByName(userName);
 		if(dd2!=null&&dd2.getId().longValue()!=dd.getId().longValue()){
@@ -856,7 +856,7 @@ public class SysPermissionAction extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/deleteSysUser",method = RequestMethod.POST)
 	public Result deleteSysUser(long id) throws Exception {
-		sysUserService.delete(SysUser.class,id);
+		sysUserService.logicDelete(SysUser.class,id);
 		return ResultGenerator.genSuccessResult();
 	}
 

@@ -6,8 +6,8 @@ import com.honorfly.schoolsys.utils.AppConst;
 import com.honorfly.schoolsys.utils.redis.RedisUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.SQLQuery;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.query.internal.NativeQueryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -404,10 +404,12 @@ public class BaseDaoImpl implements IBaseDao {
 		if (log.isDebugEnabled()) {
 			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
 		}
-		javax.persistence.Query query = entityManager.createNativeQuery(sql).setFlushMode(FlushModeType.COMMIT);
-		SQLQuery nativeQuery= query.unwrap(SQLQuery.class);
-		nativeQuery.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
-		return nativeQuery.list();
+		javax.persistence.Query query = entityManager
+				.createNativeQuery(sql)
+				.setFlushMode(FlushModeType.COMMIT)
+				.unwrap(NativeQueryImpl.class)
+				.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+		return query.getResultList();
 	}
 
 	/**
@@ -417,16 +419,18 @@ public class BaseDaoImpl implements IBaseDao {
 		if (log.isDebugEnabled()) {
 			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
 		}
-		javax.persistence.Query query = entityManager.createNativeQuery(sql).setFlushMode(FlushModeType.COMMIT);
-		SQLQuery nativeQuery= query.unwrap(SQLQuery.class);
-		nativeQuery.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+		javax.persistence.Query query = entityManager
+				.createNativeQuery(sql)
+				.setFlushMode(FlushModeType.COMMIT)
+				.unwrap(NativeQueryImpl.class)
+		        .setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
 		if (args != null) {
 			String s;
-			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext(); nativeQuery.setParameter(s, args.get(s))) {
+			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext(); query.setParameter(s, args.get(s))) {
 				s = (String) iterator.next();
 			}
 		}
-		return nativeQuery.list();
+		return query.getResultList();
 	}
 
 	/**
@@ -436,18 +440,20 @@ public class BaseDaoImpl implements IBaseDao {
 		if (log.isDebugEnabled()) {
 			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
 		}
-		javax.persistence.Query query = entityManager.createNativeQuery(sql).setFlushMode(FlushModeType.COMMIT);
-		SQLQuery nativeQuery= query.unwrap(SQLQuery.class);
-		nativeQuery.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
-		nativeQuery.setMaxResults(size);
-		nativeQuery.setFirstResult(start);
+		javax.persistence.Query query = entityManager
+				.createNativeQuery(sql)
+				.setFlushMode(FlushModeType.COMMIT)
+				.unwrap(NativeQueryImpl.class)
+				.setResultTransformer(CriteriaSpecification.ALIAS_TO_ENTITY_MAP);
+		query.setMaxResults(size);
+		query.setFirstResult(start);
 		if (args != null) {
 			String s;
-			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext(); nativeQuery.setParameter(s, args.get(s))) {
+			for (Iterator iterator = args.keySet().iterator(); iterator.hasNext(); query.setParameter(s, args.get(s))) {
 				s = (String) iterator.next();
 			}
 		}
-		return nativeQuery.list();
+		return query.getResultList();
 	}
 
 

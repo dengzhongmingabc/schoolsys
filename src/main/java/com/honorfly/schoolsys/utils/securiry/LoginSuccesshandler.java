@@ -59,19 +59,20 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
                 throw new UsernameNotFoundException("没有对应的用户");
             }
             if (user == null) {
-                user = new SysUser();
-                user.setMobile(sessionUser.getUsername());
-                user.setUserName(sessionUser.getUsername());
-                user.setRealName("试用老师：" + sessionUser.getUsername());
-                user.setPassword(new BCryptPasswordEncoder().encode(RandomStringUtils.randomAlphanumeric(10)));//随机随机生成密码
-                user.setAdmin(true);
-                SysRole sysRole = sysPermissionService.getById(SysRole.class, 14L);//给一个默认的角色 14：老师
-                user.getRoles().add(sysRole);
-                sysPermissionService.update(user);
                 try {
+                    user = new SysUser();
+                    user.setMobile(sessionUser.getUsername());
+                    user.setUserName(sessionUser.getUsername());
+                    user.setRealName("试用老师：" + sessionUser.getUsername());
+                    user.setPassword(new BCryptPasswordEncoder().encode(RandomStringUtils.randomAlphanumeric(10)));//随机随机生成密码
+                    user.setAdmin(true);
+                    SysRole sysRole = sysPermissionService.getById(SysRole.class, 14L);//给一个默认的角色 14：老师
+                    user.getRoles().add(sysRole);
+                    sysPermissionService.save(user);
+
                     user = sysPermissionService.loadUserByMobile(sessionUser.getUsername());
                     user.setAdminId(user.getId());
-                    sysPermissionService.update(user);
+                    sysPermissionService.save(user);
                     user = sysPermissionService.getById(SysUser.class,user.getId());
                 } catch (Exception e) {
                     throw new UsernameNotFoundException("没有对应的用户");

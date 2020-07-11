@@ -5,6 +5,8 @@ import com.honorfly.schoolsys.entry.SysPermission;
 import com.honorfly.schoolsys.entry.SysRole;
 import com.honorfly.schoolsys.entry.SysUser;
 import com.honorfly.schoolsys.service.ISysPermissionService;
+import com.honorfly.schoolsys.utils.dao.EntityObj;
+import com.honorfly.schoolsys.utils.service.BaseException;
 import com.honorfly.schoolsys.utils.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,19 @@ public class SysPermissionServiceImpl extends BaseService implements ISysPermiss
 
 	@Autowired
 	private ISysPermissionDao spDao;
+
+	/**
+	 * 查询实体
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public <T> T getById(Class<T> clazz, Object id) throws Exception {
+		EntityObj entityObj = (EntityObj) baseDaoImpl.getById(clazz, id);
+		if (entityObj == null || !entityObj.invalid) {
+			throw new BaseException("没有对应的数据");
+		}
+		return (T) entityObj;
+	}
 
 	public void updateRole(SysRole role, String[] addPermission, String[] delPermission) throws Exception{
 		spDao.delPermission(role, delPermission);

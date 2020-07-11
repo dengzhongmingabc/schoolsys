@@ -16,14 +16,24 @@ public class SysRoleForm  {
 	@ApiModelProperty(value="权限集")
 	private String newpermissions;
 
-	@ApiModelProperty(value="状态")
-	private Boolean invalid;
+
 
 	@ApiModelProperty(value="选择类型")
 	private int selectType;
 
 	@ApiModelProperty(value="学校ID集")
 	private String schoolIdStr;
+
+	@ApiModelProperty(value="是否锁定")
+	private Boolean isLock;
+
+	public Boolean getIsLock() {
+		return isLock;
+	}
+
+	public void setIsLock(Boolean lock) {
+		isLock = lock;
+	}
 
 	public int getSelectType() {
 		return selectType;
@@ -41,13 +51,7 @@ public class SysRoleForm  {
 		this.schoolIdStr = schoolIdStr;
 	}
 
-	public Boolean getInvalid() {
-		return invalid;
-	}
 
-	public void setInvalid(Boolean invalid) {
-		this.invalid = invalid;
-	}
 
 	public String getNewpermissions() {
 		return newpermissions;

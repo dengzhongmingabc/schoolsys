@@ -17,6 +17,9 @@ public class SysRole  extends EntityObj {
 	@Column(name = "role_name")
 	private String roleName;
 
+	@Column
+	private Boolean isLock;
+
 	@ManyToMany(cascade=CascadeType.PERSIST,fetch = FetchType.EAGER)
 	@JoinTable(
 			name="sys_role_permission",
@@ -36,6 +39,14 @@ public class SysRole  extends EntityObj {
 	// Constructors
 	@Column
 	private int selectType;
+
+	public Boolean getLock() {
+		return isLock;
+	}
+
+	public void setLock(Boolean lock) {
+		isLock = lock;
+	}
 
 	public int getSelectType() {
 		return selectType;

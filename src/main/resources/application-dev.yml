@@ -2,7 +2,7 @@ server:
   port: 8899
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/schoolsys?characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.1.6:3306/schoolsys?characterEncoding=utf8&useSSL=true&serverTimezone=UTC
     username: root
     password: deng123
     driver-class-name: com.mysql.jdbc.Driver
@@ -30,7 +30,7 @@ spring:
           slow-sql-millis: 1
   redis:
     database: 5
-    host: 192.168.150.3
+    host: 192.168.1.6
     password:
     port: 6379
     timeout: 3000

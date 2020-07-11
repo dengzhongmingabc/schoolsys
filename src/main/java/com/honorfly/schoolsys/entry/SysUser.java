@@ -57,6 +57,16 @@ public class SysUser extends EntityObj {
 	@Column
 	private Integer wrongCount=0;
 
+	@Column
+	private Boolean isLock;
+
+	public Boolean getLock() {
+		return isLock;
+	}
+
+	public void setLock(Boolean lock) {
+		isLock = lock;
+	}
 
 	public String getUserName() {
 		return userName;

@@ -2,7 +2,6 @@ package com.honorfly.schoolsys.service.impl;
 
 import com.honorfly.schoolsys.entry.School;
 import com.honorfly.schoolsys.service.ISchoolManagerService;
-import com.honorfly.schoolsys.utils.BaseException;
 import com.honorfly.schoolsys.utils.dao.IBaseDao;
 import com.honorfly.schoolsys.utils.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +25,7 @@ public class SchoolServiceImpl extends BaseService implements ISchoolManagerServ
 
 	//逻辑删除
 	public void delete(Long adminId,long schoolId) throws Exception {
-		School school = this.getById(School.class,schoolId);
-		if(school==null||!adminId.equals(school.getAdminId())){
-			throw new BaseException("没有查相关数据！");
-		}
-		school.setInvalid(false);//逻辑删除
-		baseDaoImpl.save(school);
+		this.logicDelete(School.class,schoolId);
 	}
 
 

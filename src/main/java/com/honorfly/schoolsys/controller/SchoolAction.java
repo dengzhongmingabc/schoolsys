@@ -27,43 +27,12 @@ import java.util.List;
 @RequestMapping("/school/")
 public class SchoolAction extends BaseController {
 
+    {
+        entityObjClazz = School.class;
+    }
+
     @Autowired
     ISchoolManagerService schoolManagerService;
-
-/*    @ApiOperation(value = "学校列表")
-    @ResponseBody
-    @RequestMapping(value = "/schoolList", method = RequestMethod.POST)
-    public Result schoolList() throws Exception {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        SessionUser sessionUser = (SessionUser) auth.getPrincipal();
-        List<School> list = schoolManagerService.schoolList(sessionUser.getAdminId());
-
-        List retList = new ArrayList();
-        //分成三个一组
-        List sonList = null;
-        for (int i = 0; i < list.size(); i++) {
-            if (i % 3 == 0) {
-                sonList = new ArrayList();
-                sonList.add(list.get(i));
-                if(i==list.size()-1){
-                    retList.add(sonList);
-                }
-            }
-            if (i % 3 == 1) {
-                sonList.add(list.get(i));
-                if(i==list.size()-1){
-                    retList.add(sonList);
-                }
-            }
-            if (i % 3 == 2) {
-                sonList.add(list.get(i));
-                retList.add(sonList);
-            }
-        }
-
-        return ResultGenerator.genSuccessResult(retList);
-    }*/
-
 
     @ApiOperation(value = "校区列表")
     @ResponseBody
