@@ -1,5 +1,6 @@
 package com.honorfly.schoolsys.utils.dao;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,9 +26,7 @@ public class EntityObj implements Serializable, IElement {
     // 把日志记录到log4j中输�?
     private static final Log logger = LogFactory.getLog(EntityObj.class);
 
-    public static enum Status {start, end, ineffective, effective}
-
-    ;
+    public static enum Status {start, end, ineffective, effective};
     /*实体ID*/
     @Id
     @Column(name = "id")
@@ -36,6 +35,7 @@ public class EntityObj implements Serializable, IElement {
 
     /*创建的人时间*/
     @Column(name = "created_date")
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public Date createdDate;
 
     @Column(name = "creater")
@@ -47,12 +47,14 @@ public class EntityObj implements Serializable, IElement {
     /*最后修改的人*/
     @Column(name = "last_modifier")
     public String lastModifier;
+
     /*最后修改的人*/
     @Column(name = "last_modifier_id")
     public Long lastModifierId;
 
     /*最后修改时间*/
     @Column(name = "last_modified_date")
+    @JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public Date lastModifiedDate;
     /*是否有效*/
     @Column(name = "invalid")
@@ -243,12 +245,21 @@ public class EntityObj implements Serializable, IElement {
      */
     public void setPropertyValue(String s, Object obj) {
         try {
-            Field field = getClass().getField(s);
+
+            Field field = null;
+            try {
+                field = getClass().getDeclaredField(s);
+            } catch (NoSuchFieldException e) {
+                field = getClass().getSuperclass().getDeclaredField(s);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            field.setAccessible(true);
             String s1 = field.getType().getSimpleName();
             if (s1.equals(obj.getClass().getSimpleName()))
                 field.set(this, obj);
-            else if (obj.getClass().equals(String.class))
-                field.set(this, String.valueOf(obj));
+            else if (s1.equals("Long") || s1.equals("long"))
+                field.set(this, Long.valueOf(obj.toString()).longValue());
             else if (s1.equals("Integer") || s1.equals("int"))
                 field.set(this, Integer.valueOf(obj.toString()).intValue());
             else if (s1.equals("Float") || s1.equals("float"))
@@ -266,7 +277,8 @@ public class EntityObj implements Serializable, IElement {
                     SimpleDateFormat simpledateformat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
                     field.set(this, simpledateformat1.parse(s2.replaceFirst("CST", "")));
                 }
-            }
+            }else if (obj.getClass().equals(String.class))
+                field.set(this, String.valueOf(obj));
         } catch (Exception _ex) {
             logger.warn((new StringBuilder(String.valueOf(getClass().getName()))).append(" setPropertyValue error ").append(" for ").append(s).toString());
         }

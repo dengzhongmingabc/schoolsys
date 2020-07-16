@@ -42,24 +42,26 @@ public class BaseService implements IBaseService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Long save(EntityObj data) throws Exception {
-        if (data.id == null || data.id.toString().length() < 1) {
-            data.lastModifiedDate = new Date();
-            data.lastModifier = getSession().getUsername();
-            data.lastModifierId = getSession().getId();
-            data.setCreater(getSession().getUsername());
-            data.setCreaterId(getSession().getId());
-            data.setAdminId(getSession().getAdminId());
-            data.setSchoolId(getSession().getSchoolId());
-        } else {
-            data.lastModifiedDate = new Date();
-            data.lastModifier = getSession().getUsername();
-            data.lastModifierId = getSession().getId();
-        }
-
+        data.lastModifiedDate = new Date();
+        data.lastModifier = getSession().getUsername();
+        data.lastModifierId = getSession().getId();
+        data.setCreater(getSession().getUsername());
+        data.setCreaterId(getSession().getId());
+        data.setAdminId(getSession().getAdminId());
+        data.setSchoolId(getSession().getSchoolId());
         baseDaoImpl.save(data);
         return data.id;
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Long edit(EntityObj data) throws Exception {
+        data.lastModifiedDate = new Date();
+        data.lastModifier = getSession().getUsername();
+        data.lastModifierId = getSession().getId();
+        baseDaoImpl.save(data);
+        return data.id;
+    }
     /**
      * 逻辑删除
      */
@@ -67,6 +69,9 @@ public class BaseService implements IBaseService {
     @Transactional(propagation = Propagation.REQUIRED)
     public <T> void logicDelete(Class<T> clazz, Long id) throws Exception {
         EntityObj entityObj = (EntityObj) this.getById(clazz, id);
+        if(!entityObj.getAdminId().equals(getSession().getAdminId())){
+            throw new BaseException("非法删除");
+        }
         entityObj.setInvalid(false);
         this.save(entityObj);
     }

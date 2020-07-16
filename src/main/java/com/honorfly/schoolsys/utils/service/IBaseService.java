@@ -27,4 +27,6 @@ public interface IBaseService{
 	public List loadMapBySQL(final String sql, final Map<String, String> args)throws Exception;
 
 	public List loadBySQL(final String sql, final Map<String, String> args, Class clazz)throws Exception;
+
+	public Long edit(EntityObj data) throws Exception ;
 }

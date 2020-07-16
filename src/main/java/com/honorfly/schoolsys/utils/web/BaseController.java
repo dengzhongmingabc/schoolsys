@@ -72,7 +72,7 @@ public class BaseController{
 	@ApiOperation(value="分页查询")
 	@ResponseBody
 	@RequestMapping(value = "/pageList",method = RequestMethod.POST)
-	public Result pageList(String search, @RequestBody Map<String,String> args, int pageNo, int pageSize) throws Exception{
+	public Result pageList(String search,  Map<String,String> args, int pageNo, int pageSize) throws Exception{
 		String tableName = TableInfoUtils.getTableName(this.entityObjClazz);
 		StringBuffer sql = new StringBuffer();
 		sql.append("select * from");
@@ -84,10 +84,7 @@ public class BaseController{
 		sql.append("admin_id="+getRedisSession().getAdminId());
 		sql.append(space);
 		sql.append(" and invalid=true");
-		if (!StringUtils.isBlank(search)){
-			sql.append(space);
-			sql.append("and");
-			sql.append(space);
+		if (!StringUtils.isBlank(search)&&!search.contains(" or ")){
 			sql.append(search);
 		}
 		sql.append(space);
@@ -95,6 +92,7 @@ public class BaseController{
 		Page page = baseService.getDataPageBySQL(sql.toString(),this.entityObjClazz,args,pageNo,pageSize);
 		return ResultGenerator.genSuccessResult(page);
 	}
+
 
 	@ApiOperation(value="列表查询")
 	@ResponseBody
@@ -111,10 +109,7 @@ public class BaseController{
 		sql.append("admin_id="+getRedisSession().getAdminId());
 		sql.append(space);
 		sql.append("and invalid=true");
-		if (!StringUtils.isBlank(search)){
-			sql.append(space);
-			sql.append("and");
-			sql.append(space);
+		if (!StringUtils.isBlank(search)&&!search.contains(" or ")){
 			sql.append(search);
 		}
 		sql.append(space);
@@ -137,12 +132,25 @@ public class BaseController{
 	@ApiOperation(value="新增")
 	@ResponseBody
 	@RequestMapping(value = "/save",method = RequestMethod.POST)
-	public Result save( @RequestBody Map<String,String> args) throws Exception{
+	public Result save(@RequestBody Map<String,Object> args) throws Exception{
 		EntityObj obj = (EntityObj) entityObjClazz.newInstance();
-		for(Map.Entry<String, String> entry : args.entrySet()){
+		for(Map.Entry<String, Object> entry : args.entrySet()){
 			obj.setPropertyValue(entry.getKey(),entry.getValue());
 		}
+		obj.setId(null);
 		baseService.save(obj);
+		return ResultGenerator.genSuccessResult();
+	}
+
+	@ApiOperation(value="修改")
+	@ResponseBody
+	@RequestMapping(value = "/edit",method = RequestMethod.POST)
+	public Result edit(@RequestBody Map<String,Object> args) throws Exception{
+		EntityObj obj = (EntityObj) baseService.getById(entityObjClazz,Long.parseLong(args.get("id").toString()));
+		for(Map.Entry<String, Object> entry : args.entrySet()){
+			obj.setPropertyValue(entry.getKey(),entry.getValue());
+		}
+		baseService.edit(obj);
 		return ResultGenerator.genSuccessResult();
 	}
 

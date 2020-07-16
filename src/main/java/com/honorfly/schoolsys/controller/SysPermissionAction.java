@@ -84,7 +84,7 @@ public class SysPermissionAction extends BaseController {
 				navlevel2.put("component",d.getComponent());
 				Map metanavlevel2 = new HashMap();
 				metanavlevel2.put("title",d.getTitle());
-				metanavlevel2.put("icon",d.getIcon());
+				//metanavlevel2.put("icon",d.getIcon());
 				metanavlevel2.put("show",d.getShow());
 				metanavlevel2.put("hideHeader",false);
 				metanavlevel2.put("hideChildren",true);
