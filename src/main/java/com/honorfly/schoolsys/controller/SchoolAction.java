@@ -11,7 +11,9 @@ import com.honorfly.schoolsys.utils.Result;
 import com.honorfly.schoolsys.utils.ResultGenerator;
 import com.honorfly.schoolsys.utils.web.BaseController;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,10 @@ import java.util.List;
 @RequestMapping("/school/")
 public class SchoolAction extends BaseController {
 
-    {
+    @Bean
+    public School setSchool() throws BeansException {
         entityObjClazz = School.class;
+        return  null;
     }
 
     @Autowired

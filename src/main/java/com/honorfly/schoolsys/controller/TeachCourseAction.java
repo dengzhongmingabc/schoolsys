@@ -14,7 +14,9 @@ import com.honorfly.schoolsys.utils.ResultGenerator;
 import com.honorfly.schoolsys.utils.web.BaseController;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,10 +31,12 @@ import java.util.Map;
 @Controller
 @RequestMapping("/teachCourse/")
 public class TeachCourseAction extends BaseController {
-    {
-        entityObjClazz = TeachCourse.class;
-    }
 
+    @Bean
+    public TeachCourse setTeachCourse() throws BeansException {
+        entityObjClazz = TeachCourse.class;
+        return  null;
+    }
     @Autowired
     ISchoolManagerService schoolManagerService;
 
