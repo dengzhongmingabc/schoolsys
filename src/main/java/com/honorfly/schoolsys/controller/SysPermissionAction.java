@@ -85,6 +85,7 @@ public class SysPermissionAction extends BaseController {
 				Map metanavlevel2 = new HashMap();
 				metanavlevel2.put("title",d.getTitle());
 				//metanavlevel2.put("icon",d.getIcon());
+
 				metanavlevel2.put("show",d.getShow());
 				metanavlevel2.put("hideHeader",false);
 				metanavlevel2.put("hideChildren",true);
@@ -124,56 +125,7 @@ public class SysPermissionAction extends BaseController {
 		return ResultGenerator.genSuccessResult(navs);
 	}
 
-	/*@ApiOperation(value="用户信息")
-	@ResponseBody
-	@RequestMapping(value = "/info",method = RequestMethod.POST)
-	public Result info() throws Exception{
-		SessionUser sessionUser = this.getRedisSession();
-		Map role = new HashMap();
-		role.put("id","admin");
-		role.put("name","管理员");
-		role.put("describe","拥有所有权限");
-		role.put("creatorId","system");
-		role.put("createTime","1497160610259");
-		role.put("deleted",0);
-		role.put("status",1);
 
-		List permissions = new ArrayList();
-		Map pession = new HashMap();
-		pession.put("roleId","admin");
-		pession.put("permissionId","dashboard");
-		pession.put("permissionName","仪表盘");
-
-		List actions = new ArrayList();
-		Map action = new HashMap();
-		action.put("action","add");
-		action.put("defaultCheck",false);
-		action.put("describe","新增");
-		actions.add(action);
-		action = new HashMap();
-		action.put("action","query");
-		action.put("defaultCheck",false);
-		action.put("describe","查询");
-		actions.add(action);
-
-		pession.put("actions",actions);
-		pession.put("actionEntitySet",actions);
-
-		permissions.add(pession);
-
-		role.put("permissions",permissions);
-
-		Map userInfo = new HashMap();
-		userInfo.put("name",sessionUser.getRealName());
-		userInfo.put("token","4291d7da9005377ec9aec4a71ea837f");
-		userInfo.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
-		userInfo.put("status","1");
-		userInfo.put("username",sessionUser.getUsername());
-		userInfo.put("mobile",sessionUser.getMobile());
-		userInfo.put("role",role);
-		return ResultGenerator.genSuccessResult(userInfo);
-	}
-*/
 
 
 	@ApiOperation(value="用户信息")
