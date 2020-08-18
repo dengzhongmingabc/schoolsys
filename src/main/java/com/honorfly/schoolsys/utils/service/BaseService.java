@@ -121,4 +121,14 @@ public class BaseService implements IBaseService {
     public List loadBySQL(final String sql, final Map<String, String> args, Class clazz) throws Exception {
         return baseDaoImpl.loadBySQL(sql, args, clazz);
     }
+
+    public List loadByJPQL(final String sql, final Map<String, String> args) throws Exception {
+        return baseDaoImpl.loadByJPQL(sql, args);
+    }
+
+    public Page getMapDataPageByJPQL(String sql, Map<String, String> args, int curPage, int pageSize)
+            throws Exception// 返回视图
+    {
+        return PageFactory.createPageByJPQL(baseDaoImpl, sql, args, curPage, pageSize);
+    }
 }

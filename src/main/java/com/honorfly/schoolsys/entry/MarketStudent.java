@@ -77,6 +77,17 @@ public class MarketStudent extends EntityObj {
 	@Column
 	private Boolean forbidden=false;
 
+	@Column
+	private Boolean inward = false;
+
+	public Boolean getInward() {
+		return inward;
+	}
+
+	public void setInward(Boolean inward) {
+		this.inward = inward;
+	}
+
 	public Long getMarketPersonFirstId() {
 		return marketPersonFirstId;
 	}

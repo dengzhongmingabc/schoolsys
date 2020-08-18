@@ -1,6 +1,10 @@
 package com.honorfly.schoolsys.entry;
 
+import com.alibaba.fastjson.JSONArray;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
+import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 
@@ -9,6 +13,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "handler_order")
+@TypeDef(name = "json", typeClass = JsonStringType.class)
 public class HandlerOrder extends EntityObj {
 	@Column
 	private String orderNo;
@@ -20,21 +25,36 @@ public class HandlerOrder extends EntityObj {
 	private Long studentId;
 	@Column
 	private int orderType;//1:报名，2：续费，3：补费，4：转课，5：退费，6：资料，7：积分
-	@Column
-	private String orderContent;
+	@Type(type = "json")
+	@Column(columnDefinition = "json")
+	private JSONArray orderContent;
 	@Column
 	private int orderMoney;//订单应收的钱  单位为分
 	@Column
 	private int getOrderMoneyReality;//实收费用 单位为分
+
+	@Column
+	private int oweUp;//欠款费用 单位为分
+
 	@Column
 	private int studentAccRecord;//学员账户记录
+
 	@Column
 	private String remark;//说明
+
 	@Column
-	private Boolean forbidden;
+	private Boolean forbidden=false;
 
 	public Boolean getForbidden() {
 		return forbidden;
+	}
+
+	public int getOweUp() {
+		return oweUp;
+	}
+
+	public void setOweUp(int oweUp) {
+		this.oweUp = oweUp;
 	}
 
 	public void setForbidden(Boolean forbidden) {
@@ -73,11 +93,11 @@ public class HandlerOrder extends EntityObj {
 		this.orderType = orderType;
 	}
 
-	public String getOrderContent() {
+	public JSONArray getOrderContent() {
 		return orderContent;
 	}
 
-	public void setOrderContent(String orderContent) {
+	public void setOrderContent(JSONArray orderContent) {
 		this.orderContent = orderContent;
 	}
 

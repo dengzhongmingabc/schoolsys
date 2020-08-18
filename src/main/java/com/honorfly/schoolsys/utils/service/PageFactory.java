@@ -17,9 +17,15 @@ public class PageFactory {
 	private static  String pagefix=",";
 
 	public static Page createPageByJPQL(IBaseDao dao, String jpql, Map<String,String> parameter, int currentPage, int pageSize)throws Exception {
-		jpql = jpql.split(" order ")[0];
-		int totalCount = dao.getJPQLTotalCnt(jpql, parameter);
-		
+
+		String jpql_ = jpql.split(" order ")[0];
+		int fromIndex = jpql_.indexOf("from");
+		String sqlselect = "select";
+		String sqlFrom = jpql_.substring(fromIndex);
+		jpql_ = sqlselect + " count(*) " + sqlFrom;
+
+		int totalCount = dao.getJPQLTotalCnt(jpql_, parameter);
+
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
 		List results = dao.loadByJPQL(jpql, parameter, startIndex, pageSize);
 		return createPage(currentPage, pageSize, totalCount, results);
@@ -33,7 +39,7 @@ public class PageFactory {
 		List results = dao.loadByJPQL(jpql, null, startIndex, pageSize);
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
-	
+
 	public static Page createMapPageBySql(IBaseDao dao, String sql_,Map<String,String> args, int currentPage, int pageSize)throws Exception {
 		String sql = sql_.split(" order ")[0];
 		int selectindex = sql.indexOf("select");
@@ -42,14 +48,14 @@ public class PageFactory {
 		String sqlFrom = sql.substring(fromIndex);
 		sql = sqlselect + " count(*) " + sqlFrom;
 		int totalCount = dao.getSQLTotalCnt(sql,args);
-		
+
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
-		
+
 		String listsql = sql_+" limit "+startIndex+pagefix+pageSize;
 		List results = dao.loadMapBySQL(listsql,args);
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
-	
+
 	public static Page createMapPageBySql2(IBaseDao dao, String sql_,Map<String,String> args, int currentPage, int pageSize)throws Exception {
 		StringBuffer sqlcount = new StringBuffer();
 		sqlcount.append("select count(*) from (").append(sql_).append(") t");
@@ -68,9 +74,9 @@ public class PageFactory {
 		String sqlFrom = sql.substring(fromIndex);
 		sql = sqlselect + " count(*) " + sqlFrom;
 		int totalCount = dao.getSQLTotalCnt(sql,args);
-		
+
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
-		
+
 		String listsql = sql_+" limit "+startIndex+pagefix+pageSize;
 		List results = dao.loadBySQL(listsql,args,clazz);
 		return createPage(currentPage, pageSize, totalCount, results);
@@ -80,10 +86,10 @@ public class PageFactory {
 
 	public static Page createQueryPage(IBaseDao dao, String hql, String rowhql, Map<String,String> parameter, int currentPage, int pageSize)throws Exception {
 		int totalCount = dao.getJPQLTotalCnt(rowhql, parameter);
-		
+
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
 		List results = dao.loadByJPQL(hql, parameter, startIndex, pageSize);
-		
+
 
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
@@ -92,29 +98,29 @@ public class PageFactory {
 		int totalCount = dao.getJPQLTotalCnt(rowhql, null);
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
 		List results = dao.loadByJPQL(hql, null, startIndex, pageSize);
-		
+
 
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
 
 	public static int getStartIndex(int currentPage, int pageSize,int total)throws Exception {
-		
-		int pageCount=0;	
+
+		int pageCount=0;
 	    pageCount=total/pageSize;
 	    if((total%pageSize)>0)
 	       pageCount+=1;
-	    
+
 		int cPageNo = currentPage;
 	     int totals = pageCount;
 	     if(cPageNo>totals)
-	        cPageNo = totals; 
+	        cPageNo = totals;
 	     else if(cPageNo<=0)
 	     	cPageNo = 1;
 	     int index =  (cPageNo-1)*pageSize;
 	     if(index<0)
 	    	 index = 0;
 	     return index;
-		
+
 /*		if (currentPage < 1)
 			currentPage = 1;
 		return (currentPage - 1) * pageSize;*/

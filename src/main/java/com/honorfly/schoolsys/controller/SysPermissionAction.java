@@ -169,6 +169,8 @@ public class SysPermissionAction extends BaseController {
 		userInfo.put("status","1");
 		userInfo.put("username",sessionUser.getUsername());
 		userInfo.put("mobile",sessionUser.getMobile());
+		userInfo.put("currentSchoolId",sessionUser.getSchoolId());
+
 		userInfo.put("role",role);
 		com.alibaba.fastjson.JSON json = new JSONObject(userInfo);
 		System.out.println("yyyyyy----"+json);

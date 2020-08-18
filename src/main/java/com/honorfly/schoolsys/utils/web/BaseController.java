@@ -93,6 +93,32 @@ public class BaseController{
 		return ResultGenerator.genSuccessResult(page);
 	}
 
+	@ApiOperation(value="分页查询")
+	@ResponseBody
+	@RequestMapping(value = "/pageListByJPQL",method = RequestMethod.POST)
+	public Result pageListByJPQL(String search,  Map<String,String> args, int pageNo, int pageSize) throws Exception{
+		String tableName = TableInfoUtils.getTableName(this.entityObjClazz);
+		StringBuffer sql = new StringBuffer();
+		sql.append("from");
+		sql.append(space);
+		sql.append(this.entityObjClazz.getSimpleName());
+		sql.append(space);
+		sql.append(" obj ");
+		sql.append("where");
+		sql.append(space);
+		sql.append("obj.adminId="+getRedisSession().getAdminId());
+		sql.append(space);
+		sql.append(" and obj.invalid=true ");
+		if (!StringUtils.isBlank(search)&&!search.contains(" or ")){
+			sql.append(search);
+			//sql.append(" obj.marketStudent.studentName='邓晨铃'");
+		}
+		sql.append(space);
+		sql.append("order by id desc");
+		//List page = baseService.loadByJPQL(sql.toString(),args);
+		Page page = baseService.getMapDataPageByJPQL(sql.toString(),args,pageNo,pageSize);
+		return ResultGenerator.genSuccessResult(page);
+	}
 
 	@ApiOperation(value="列表查询")
 	@ResponseBody

@@ -29,4 +29,8 @@ public interface IBaseService{
 	public List loadBySQL(final String sql, final Map<String, String> args, Class clazz)throws Exception;
 
 	public Long edit(EntityObj data) throws Exception ;
+
+	public List loadByJPQL(final String sql, final Map<String, String> args) throws Exception ;
+
+	public Page getMapDataPageByJPQL(String sql, Map<String, String> args, int curPage, int pageSize) throws Exception ;
 }
