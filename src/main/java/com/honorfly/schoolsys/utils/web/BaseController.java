@@ -93,7 +93,16 @@ public class BaseController{
 		return ResultGenerator.genSuccessResult(page);
 	}
 
-	@ApiOperation(value="分页查询")
+	/**
+	 * 当查询条件是子对象里的字段时用的
+	 * @param search
+	 * @param args
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * @throws Exception
+	 */
+	@ApiOperation(value="JPQL分页查询")
 	@ResponseBody
 	@RequestMapping(value = "/pageListByJPQL",method = RequestMethod.POST)
 	public Result pageListByJPQL(String search,  Map<String,String> args, int pageNo, int pageSize) throws Exception{

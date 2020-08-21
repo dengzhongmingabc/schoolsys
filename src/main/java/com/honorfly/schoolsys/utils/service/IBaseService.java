@@ -33,4 +33,6 @@ public interface IBaseService{
 	public List loadByJPQL(final String sql, final Map<String, String> args) throws Exception ;
 
 	public Page getMapDataPageByJPQL(String sql, Map<String, String> args, int curPage, int pageSize) throws Exception ;
+
+	public int getSQLTotalCnt(String sql)throws Exception;
 }

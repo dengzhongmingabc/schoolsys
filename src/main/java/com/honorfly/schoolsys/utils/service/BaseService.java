@@ -102,6 +102,10 @@ public class BaseService implements IBaseService {
         return (T) entityObj;
     }
 
+    public int getSQLTotalCnt(String sql)throws Exception {
+       return  baseDaoImpl.getSQLTotalCnt(sql);
+    }
+
     public Page getDataPageBySQL(String sql, Class clazz, Map<String, String> args, int curPage, int pageSize)
             throws Exception// 返回视图
     {

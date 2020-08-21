@@ -1,6 +1,7 @@
 package com.honorfly.schoolsys.entry;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
@@ -79,6 +80,19 @@ public class MarketStudent extends EntityObj {
 
 	@Column
 	private Boolean inward = false;
+
+
+	@Type(type = "json")
+	@Column(columnDefinition = "json")
+	private JSONObject buyCourse;//购买课程
+
+	public JSONObject getBuyCourse() {
+		return buyCourse;
+	}
+
+	public void setBuyCourse(JSONObject buyCourse) {
+		this.buyCourse = buyCourse;
+	}
 
 	public Boolean getInward() {
 		return inward;

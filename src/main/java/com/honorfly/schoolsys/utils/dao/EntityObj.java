@@ -269,9 +269,9 @@ public class EntityObj implements Serializable, IElement {
             else if (s1.equals("Boolean") || s1.equals("boolean"))
                 field.set(this, Boolean.valueOf(obj.toString()).booleanValue());
             else if ("Timestamp".equals(s1) || "Date".equals(s1)) {
-                SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.US);
+                SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                 String s2 = (String) obj;
-                if (s2.indexOf("/") >= 0) {
+                if (s2.indexOf("-") >= 0) {
                     field.set(this, simpledateformat.parse(s2));
                 } else {
                     SimpleDateFormat simpledateformat1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.US);
