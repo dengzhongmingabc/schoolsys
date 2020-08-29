@@ -153,6 +153,39 @@ public class BaseController{
 		return ResultGenerator.genSuccessResult(resultList);
 	}
 
+	/**
+	 * 当查询条件是子对象里的字段时用的
+	 * @param search
+	 * @param args
+	 * @return
+	 * @throws Exception
+	 */
+	@ApiOperation(value="JPQL分页查询")
+	@ResponseBody
+	@RequestMapping(value = "/listByJPQL",method = RequestMethod.POST)
+	public Result listByJPQL(String search,  Map<String,String> args) throws Exception{
+		StringBuffer sql = new StringBuffer();
+		sql.append("from");
+		sql.append(space);
+		sql.append(this.entityObjClazz.getSimpleName());
+		sql.append(space);
+		sql.append(" obj ");
+		sql.append("where");
+		sql.append(space);
+		sql.append("obj.adminId="+getRedisSession().getAdminId());
+		sql.append(space);
+		sql.append(" and obj.invalid=true ");
+		if (!StringUtils.isBlank(search)&&!search.contains(" or ")){
+			sql.append(search);
+			//sql.append(" obj.marketStudent.studentName='邓晨铃'");
+		}
+		sql.append(space);
+		sql.append("order by id desc");
+		//List page = baseService.loadByJPQL(sql.toString(),args);
+		List resultList = baseService.loadByJPQL(sql.toString(),args);
+		return ResultGenerator.genSuccessResult(resultList);
+	}
+
 	@ApiOperation(value="ID查询")
 	@ResponseBody
 	@RequestMapping(value = "/query",method = RequestMethod.POST)

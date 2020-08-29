@@ -5,6 +5,8 @@ import com.vladmihalcea.hibernate.type.array.IntArrayType;
 import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
@@ -14,18 +16,20 @@ import javax.persistence.*;
  * SysUser entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "teach_student_course")
+
+@Table(name = "teach_student_teacher")
 @TypeDefs({
 		@TypeDef(name = "string-array", typeClass = StringArrayType.class),
 		@TypeDef(name = "int-array", typeClass = IntArrayType.class),
 		@TypeDef(name = "json", typeClass = JsonStringType.class),
 		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
-public class TeachStudentCourse extends EntityObj {
+public class TeachStudentTeacher extends EntityObj {
 
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	@JoinColumn(name = "studentId", insertable = false, updatable = false)
 	private MarketStudent marketStudent;
+
 	@Column
     private Long studentId=0L;
 
@@ -40,8 +44,19 @@ public class TeachStudentCourse extends EntityObj {
 	@Column
 	private int teachType = 1;//1:一对一，2：班级
 
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@NotFound(action= NotFoundAction.IGNORE)
+	//@JoinColumn(name = "teacherId", insertable = false,updatable = false)
+	@JoinColumn(
+			name = "teacherId", insertable = false,updatable = false,
+			foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
+	private SysUser teacher;
 	@Column
-    private Long classId=0L;
+    private Long teacherId=0L;
+
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name = "schoolId", insertable = false, updatable = false)
+	private School school;
 
 	public Long getStudentId() {
 		return studentId;
@@ -76,6 +91,7 @@ public class TeachStudentCourse extends EntityObj {
 	}
 
 
+
 	public MarketStudent getMarketStudent() {
 		return marketStudent;
 	}
@@ -92,11 +108,28 @@ public class TeachStudentCourse extends EntityObj {
 		this.course = course;
 	}
 
-	public Long getClassId() {
-		return classId;
+
+	public SysUser getTeacher() {
+		return teacher;
 	}
 
-	public void setClassId(Long classId) {
-		this.classId = classId;
+	public void setTeacher(SysUser teacher) {
+		this.teacher = teacher;
+	}
+
+	public Long getTeacherId() {
+		return teacherId;
+	}
+
+	public void setTeacherId(Long teacherId) {
+		this.teacherId = teacherId;
+	}
+
+	public School getSchool() {
+		return school;
+	}
+
+	public void setSchool(School school) {
+		this.school = school;
 	}
 }

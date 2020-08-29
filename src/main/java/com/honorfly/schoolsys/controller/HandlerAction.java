@@ -6,9 +6,7 @@ package com.honorfly.schoolsys.controller;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.honorfly.schoolsys.entry.HandlerOrder;
-import com.honorfly.schoolsys.entry.MarketStudent;
-import com.honorfly.schoolsys.entry.TeachStudentCourse;
+import com.honorfly.schoolsys.entry.*;
 import com.honorfly.schoolsys.service.ITeachService;
 import com.honorfly.schoolsys.utils.Result;
 import com.honorfly.schoolsys.utils.ResultGenerator;
@@ -61,18 +59,43 @@ public class HandlerAction extends BaseController {
             if (record != null) {
                 Long courseId = record.getLongValue("key");
                 int courseCount = record.getIntValue("courseCount") * record.getIntValue("number");
-                Long classId = record.getLongValue("currentClass");
-                TeachStudentCourse teachStudentCourse = teachService.queryCount(studentId, courseId);
-                if (teachStudentCourse != null) {
-                    teachStudentCourse.setCourseCount(teachStudentCourse.getCourseCount() + courseCount);
-                } else {
-                    teachStudentCourse = new TeachStudentCourse();
-                    teachStudentCourse.setCourseCount(courseCount);
+                Long classIdOrTeacherId = record.getLongValue("currentClassOrTeacher");
+                int teachType = record.getIntValue("teachType");
+                if(teachType==2) {
+                    TeachStudentCourse teachStudentCourse = teachService.queryCount(studentId, courseId);
+                    if (teachStudentCourse != null) {
+                        teachStudentCourse.setCourseCount(teachStudentCourse.getCourseCount() + courseCount);
+                    } else {
+                        teachStudentCourse = new TeachStudentCourse();
+                        teachStudentCourse.setCourseCount(courseCount);
+                    }
+                    teachStudentCourse.setCourseId(courseId);
+                    teachStudentCourse.setClassId(classIdOrTeacherId);
+                    teachStudentCourse.setStudentId(studentId);
+                    teachStudentCourse.setTeachType(teachType);
+                    baseService.save(teachStudentCourse);
+                }else{
+                    TeachStudentTeacher teachStudentTeacher = teachService.queryTeachStudentTeacher(studentId, courseId);
+                    if (teachStudentTeacher != null) {
+                        teachStudentTeacher.setCourseCount(teachStudentTeacher.getCourseCount() + courseCount);
+                    } else {
+                        teachStudentTeacher = new TeachStudentTeacher();
+                        teachStudentTeacher.setCourseCount(courseCount);
+                    }
+                    teachStudentTeacher.setCourseId(courseId);
+                    teachStudentTeacher.setTeacherId(classIdOrTeacherId);
+                    teachStudentTeacher.setStudentId(studentId);
+                    teachStudentTeacher.setTeachType(teachType);
+                    baseService.save(teachStudentTeacher);
                 }
-                teachStudentCourse.setCourseId(courseId);
-                teachStudentCourse.setClassId(classId);
-                teachStudentCourse.setStudentId(studentId);
-                baseService.save(teachStudentCourse);
+                //统计班级人数
+                if(teachType==2){//如果是2：班级，统计班级报名人数
+                    TeachClasses teachClasses = baseService.getById(TeachClasses.class,classIdOrTeacherId);
+                    if(teachClasses!=null){
+                        teachClasses.setPersonCountCurrent(baseService.getSQLTotalCnt("select count(*) from teach_student_course where class_id="+classIdOrTeacherId));
+                        baseService.edit(teachClasses);
+                    }
+                }
             }
         }
         baseService.save(marketStudent);

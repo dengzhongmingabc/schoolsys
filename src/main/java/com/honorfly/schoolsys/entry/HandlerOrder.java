@@ -2,9 +2,13 @@ package com.honorfly.schoolsys.entry;
 
 import com.alibaba.fastjson.JSONArray;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 
@@ -13,7 +17,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "handler_order")
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDefs({
+		@TypeDef(name = "string-array", typeClass = StringArrayType.class),
+		@TypeDef(name = "int-array", typeClass = IntArrayType.class),
+		@TypeDef(name = "json", typeClass = JsonStringType.class),
+		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class HandlerOrder extends EntityObj {
 	@Column
 	private String orderNo;
@@ -25,8 +34,8 @@ public class HandlerOrder extends EntityObj {
 	private Long studentId;
 	@Column
 	private int orderType;//1:报名，2：续费，3：补费，4：转课，5：退费，6：资料，7：积分
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private JSONArray orderContent;
 	@Column
 	private int orderMoney;//订单应收的钱  单位为分

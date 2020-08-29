@@ -46,6 +46,8 @@ public class LoginSuccesshandler implements AuthenticationSuccessHandler {
         if (sessionUser.getId() > 1) {//密码账号认证
             try {
                 user = sysPermissionService.getById(SysUser.class, sessionUser.getId());
+                System.out.println(user);
+
             } catch (Exception e) {
                 throw new UsernameNotFoundException("没有对应的用户");
             }

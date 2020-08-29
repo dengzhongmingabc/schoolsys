@@ -3,9 +3,13 @@ package com.honorfly.schoolsys.entry;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,7 +20,12 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "market_student")
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDefs({
+		@TypeDef(name = "string-array", typeClass = StringArrayType.class),
+		@TypeDef(name = "int-array", typeClass = IntArrayType.class),
+		@TypeDef(name = "json", typeClass = JsonStringType.class),
+		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class MarketStudent extends EntityObj {
 
 	@Column
@@ -40,16 +49,16 @@ public class MarketStudent extends EntityObj {
 	@Column
 	private int seekDepth;//1,2,3,4,5 意向度
 
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private JSONArray seekCourse;//咨询课程
 
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private List<Map> tags;//标签
 
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private List<Map> talkMark;//沟通记录
 
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
@@ -82,8 +91,8 @@ public class MarketStudent extends EntityObj {
 	private Boolean inward = false;
 
 
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private JSONObject buyCourse;//购买课程
 
 	public JSONObject getBuyCourse() {

@@ -14,7 +14,7 @@ import java.util.Map;
 @ServletComponentScan
 public class PageFactory {
 
-	private static  String pagefix=",";
+	private static  String pagefix=" offset ";
 
 	public static Page createPageByJPQL(IBaseDao dao, String jpql, Map<String,String> parameter, int currentPage, int pageSize)throws Exception {
 
@@ -51,7 +51,7 @@ public class PageFactory {
 
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
 
-		String listsql = sql_+" limit "+startIndex+pagefix+pageSize;
+		String listsql = sql_+" limit "+pageSize+pagefix+startIndex;
 		List results = dao.loadMapBySQL(listsql,args);
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
@@ -61,7 +61,7 @@ public class PageFactory {
 		sqlcount.append("select count(*) from (").append(sql_).append(") t");
 		int totalCount = dao.getSQLTotalCnt(sqlcount.toString(),args);
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
-		String listsql = sql_+" limit "+startIndex+pagefix+pageSize;
+		String listsql = sql_+" limit "+pageSize+pagefix+startIndex;
 		List results = dao.loadMapBySQL(listsql,args);
 		return createPage(currentPage, pageSize, totalCount, results);
 	}
@@ -77,7 +77,7 @@ public class PageFactory {
 
 		int startIndex = getStartIndex(currentPage, pageSize,totalCount);
 
-		String listsql = sql_+" limit "+startIndex+pagefix+pageSize;
+		String listsql = sql_+" limit "+pageSize+pagefix+startIndex;
 		List results = dao.loadBySQL(listsql,args,clazz);
 		return createPage(currentPage, pageSize, totalCount, results);
 	}

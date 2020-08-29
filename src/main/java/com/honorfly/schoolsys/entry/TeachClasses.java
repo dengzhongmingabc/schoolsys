@@ -3,21 +3,28 @@ package com.honorfly.schoolsys.entry;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.honorfly.schoolsys.utils.dao.EntityObj;
+import com.vladmihalcea.hibernate.type.array.IntArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
  */
 @Entity
 @Table(name = "teach_class")
-@TypeDef(name = "json", typeClass = JsonStringType.class)
+@TypeDefs({
+		@TypeDef(name = "string-array", typeClass = StringArrayType.class),
+		@TypeDef(name = "int-array", typeClass = IntArrayType.class),
+		@TypeDef(name = "json", typeClass = JsonStringType.class),
+		@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class TeachClasses extends EntityObj {
 	@Column
 	private String name;
@@ -60,8 +67,8 @@ public class TeachClasses extends EntityObj {
 	@JsonFormat(shape= JsonFormat.Shape.STRING,pattern="yyyy-MM-dd",timezone="GMT+8")
 	private Date endDate;
 
-	@Type(type = "json")
-	@Column(columnDefinition = "json")
+	@Type(type = "jsonb")
+	@Column(columnDefinition = "jsonb")
 	private JSONObject courseTime;
 
 	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)

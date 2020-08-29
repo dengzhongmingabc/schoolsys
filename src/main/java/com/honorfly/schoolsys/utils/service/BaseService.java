@@ -93,13 +93,14 @@ public class BaseService implements IBaseService {
     @Transactional(readOnly = true)
     public <T> T getById(Class<T> clazz, Object id) throws Exception {
         EntityObj entityObj = (EntityObj) baseDaoImpl.getById(clazz, id);
-        if (entityObj == null || !entityObj.invalid) {
-            throw new BaseException("没有对应的数据");
+        if (entityObj==null||!entityObj.invalid) {
+            return null;
         }
         if (!(entityObj instanceof SysPermission) && !getSession().getAdminId().equals(entityObj.getAdminId())){
-			throw new BaseException("没有对应的数据");
+            return null;
 		}
         return (T) entityObj;
+
     }
 
     public int getSQLTotalCnt(String sql)throws Exception {
