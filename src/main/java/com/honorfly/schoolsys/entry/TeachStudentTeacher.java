@@ -58,6 +58,15 @@ public class TeachStudentTeacher extends EntityObj {
 	@JoinColumn(name = "schoolId", insertable = false, updatable = false)
 	private School school;
 
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@NotFound(action= NotFoundAction.IGNORE)
+	@JoinColumn(
+			name = "courseModelId", insertable = false,updatable = false,
+			foreignKey = @ForeignKey(name = "none",value = ConstraintMode.NO_CONSTRAINT))
+	private CourseModel courseModel;
+	@Column
+	private Long courseModelId=0L;
+
 	public Long getStudentId() {
 		return studentId;
 	}
@@ -131,5 +140,21 @@ public class TeachStudentTeacher extends EntityObj {
 
 	public void setSchool(School school) {
 		this.school = school;
+	}
+
+	public CourseModel getCourseModel() {
+		return courseModel;
+	}
+
+	public void setCourseModel(CourseModel courseModel) {
+		this.courseModel = courseModel;
+	}
+
+	public Long getCourseModelId() {
+		return courseModelId;
+	}
+
+	public void setCourseModelId(Long courseModelId) {
+		this.courseModelId = courseModelId;
 	}
 }

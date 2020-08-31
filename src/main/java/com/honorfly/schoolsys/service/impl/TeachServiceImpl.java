@@ -33,4 +33,9 @@ public class TeachServiceImpl extends BaseService implements ITeachService {
 		}
 		return null;
 	}
+
+
+	public void deleteCourseModel (Long classId) throws Exception{
+		baseDaoImpl.executeSQL("delete from teach_course_model where class_id="+classId,null);
+	}
 }

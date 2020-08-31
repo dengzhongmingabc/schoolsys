@@ -386,7 +386,7 @@ public class BaseDaoImpl implements IBaseDao {
 		if (log.isDebugEnabled()) {
 			log.debug((new StringBuilder("queryNum :")).append(sql).toString());
 		}
-		javax.persistence.Query query = entityManager.createNativeQuery(sql,Long.class).setFlushMode(FlushModeType.COMMIT);
+		javax.persistence.Query query = entityManager.createNativeQuery(sql).setFlushMode(FlushModeType.COMMIT);
 
 		if (args != null) {
 			String s;

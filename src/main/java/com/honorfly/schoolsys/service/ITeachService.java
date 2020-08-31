@@ -8,4 +8,6 @@ public interface ITeachService extends IBaseService {
 	public TeachStudentCourse queryCount(long studentId, long courseId) throws Exception;
 
 	public TeachStudentTeacher queryTeachStudentTeacher(long studentId, long courseId) throws Exception;
+
+	public void deleteCourseModel (Long classId) throws Exception;
 }
