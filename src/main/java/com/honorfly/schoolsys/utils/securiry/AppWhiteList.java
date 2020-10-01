@@ -36,5 +36,9 @@ public final class AppWhiteList {
 		notNeedLoginWhiteList.add("/login");
 		notNeedLoginWhiteList.add("/sys/user/getCaptcha");
 		notNeedLoginWhiteList.add("/sys/user/logout");
+
+		//微信访问接口
+		notNeedLoginWhiteList.add("/wechatAction/getCodeUrl");
+		notNeedLoginWhiteList.add("/wechatAction/getSNSUserInfo");
 	}
 }
